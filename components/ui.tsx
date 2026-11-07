@@ -46,7 +46,7 @@ export function Ribbon({ light = false }: { light?: boolean }) {
   return (
     <svg
       viewBox="0 0 320 46"
-      className="h-10 w-56 -scale-x-100"
+      className="h-10 w-56 rtl:-scale-x-100"
       aria-hidden="true"
       fill="none"
     >
@@ -82,7 +82,7 @@ export function Heading({
   light = false,
 }: {
   eyebrow: string;
-  title: string;
+  title: React.ReactNode;
   sub?: string;
   light?: boolean;
 }) {
@@ -117,5 +117,17 @@ export function Pic({ src, alt, label, className = "" }: { src: string; alt: str
     <div role="img" aria-label={alt} className={`grid place-items-center bg-gradient-to-br from-ink-2 to-ink ${className}`}>
       <span className="num px-4 text-center text-xs tracking-[0.3em] text-brass-2/70">{label ?? "ORA"}</span>
     </div>
+  );
+}
+
+// يثبت اتجاه الأرقام والنِسَب داخل النص العربي (5% لا تنقلب إلى %5)
+export function Bidi({ children }: { children: string }) {
+  const parts = children.split(/(\d[\d,.]*%?)/g);
+  return (
+    <>
+      {parts.map((p, i) =>
+        i % 2 ? <bdi key={i} dir="ltr" className="num">{p}</bdi> : p
+      )}
+    </>
   );
 }

@@ -46,6 +46,15 @@ h3,
   font-weight: 600;
 }
 
+/* الأرقام تتبع محاذاة اللغة (من غير ما تكسر text-center وغيرها) */
+@layer base {
+  [dir="rtl"] .num { text-align: right; }
+  [dir="ltr"] .num { text-align: left; }
+}
+
+html[lang="en"] body { font-family: var(--font-num); }
+html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3 { font-family: var(--font-num); letter-spacing: -0.02em; }
+
 /* كارت الـ slab — الحافة المنحنية + الشريط النحاسي */
 .slab {
   border-radius: 0 28px 28px 0;
@@ -134,3 +143,8 @@ h3,
 
 .no-scrollbar::-webkit-scrollbar{display:none}
 .no-scrollbar{scrollbar-width:none}
+
+/* النسخة الإنجليزي: نفس الشكل معكوس */
+[dir="ltr"] .slab, [dir="ltr"] .slab-dark { border-radius: 28px 0 0 28px; }
+[dir="ltr"] .frame { border-radius: 36px 4px 4px 36px; }
+html, body { overflow-x: clip; }

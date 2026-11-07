@@ -1,59 +1,60 @@
-import { products, fmt } from "@/lib/site";
-import { Reveal, Heading } from "./ui";
+import { fmt } from "@/lib/site";
+import { C, minOf, type Lang } from "@/lib/content";
+import { Reveal, Heading, Bidi } from "./ui";
 
-export default function Products() {
+export default function Products({ lang }: { lang: Lang }) {
+  const t = C[lang].products;
+  const ui = C[lang].ui;
   return (
     <section id="products" className="bg-paper py-20">
       <div className="mx-auto max-w-7xl px-5">
         <Reveal>
-          <Heading
-            eyebrow="Now Available"
-            title="ثلاثة طروحات في زد إيست"
-            sub="شقق مخدومة بدون مقدم، وآخر مجتمع ڤيلات في المشروع، ووحدات إدارية في زد ستريب. لكل طرح نظام سداده."
-          />
+          <Heading eyebrow={t.eyebrow} title={t.title} sub={t.sub} />
         </Reveal>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {products.map((p, i) => (
-            <Reveal key={p.slug} delay={i * 70}>
+          {t.items.map((p, i) => (
+            <Reveal key={p.slug} delay={i * 70} className="h-full">
               <article className="slab flex h-full flex-col overflow-hidden shadow-sm">
                 <div className="frame m-0 h-52 w-full border-s-0">
                   <img src={p.image} alt={p.name} className="h-52 w-full object-cover" />
                 </div>
-                <div className="flex flex-1 flex-col p-5 md:p-7">
+                <div className="flex flex-1 flex-col p-6 md:p-7">
                   <p className="eyebrow">{p.eyebrow}</p>
-                  <h3 className="num mt-3 text-lg tracking-[0.14em] text-ink">{p.nameEn}</h3>
-                  <p className="mt-1 text-lg text-ink/80">{p.name}</p>
+                  <h3 className="mt-3 text-2xl text-ink">{p.name}</h3>
                   <div className="ribbon-rule my-5 w-28" />
-                  <p className="text-[15px] leading-8 text-ink/70">{p.intro}</p>
+                  <p className="text-[15px] leading-8 text-ink/70"><Bidi>{p.intro}</Bidi></p>
 
                   <ul className="mt-5 space-y-2">
                     {p.highlights.map((h) => (
                       <li key={h} className="flex gap-3 text-[15px] text-ink/75">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brass" />
-                        {h}
+                        <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brass" />
+                        <span><Bidi>{h}</Bidi></span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-sand-2 pt-5">
-                    <div>
-                      <p className="text-xs text-ink/55">المقدم</p>
-                      <p className="num mt-1 text-lg text-ink">{p.eoi}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-ink/55">تبدأ من</p>
-                      <p className="num mt-1 text-lg text-ink">{fmt(Math.min(...p.groups.flatMap((g) => g.units.map((u) => u.price))))}</p>
-                    </div>
-                    <div className="col-span-2">
-                      <p className="text-xs text-ink/55">السداد</p>
-                      <p className="mt-1 text-[15px] text-ink">{p.plan}</p>
-                    </div>
+                  <div className="mt-auto pt-6">
+                    <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-sand-2 pt-5">
+                      <div>
+                        <dt className="text-xs text-ink/55">{ui.from}</dt>
+                        <dd className="mt-1 text-ink">
+                          <span className="num text-xl">{fmt(minOf(p))}</span> <span className="text-sm text-ink/60">{ui.egp}</span>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-xs text-ink/55">{ui.down}</dt>
+                        <dd className="num mt-1 text-xl text-ink">{p.down}</dd>
+                      </div>
+                      <div className="col-span-2">
+                        <dt className="text-xs text-ink/55">{ui.plan}</dt>
+                        <dd className="mt-1 text-[15px] leading-7 text-ink"><Bidi>{p.plan}</Bidi></dd>
+                      </div>
+                    </dl>
+                    <a href={`#units-${p.slug}`} className="mt-6 inline-block rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-ink-2">
+                      {ui.viewPrices}
+                    </a>
                   </div>
-
-                  <a href={`#units-${p.slug}`} className="mt-auto inline-block self-start rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition hover:bg-ink-2 [margin-top:1.75rem]">
-                    شاهد الأسعار
-                  </a>
                 </div>
               </article>
             </Reveal>

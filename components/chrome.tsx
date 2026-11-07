@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { site, waLink } from "@/lib/site";
+import { C, href, type Lang } from "@/lib/content";
 import { track } from "@/lib/track";
 import LeadForm from "./lead-form";
 
-const WA_MSG = "مهتم بزد إيست من أورا. برجاء إرسال الأسعار والمتاح.";
 
-export function FloatingCtas() {
+export function FloatingCtas({ lang }: { lang: Lang }) {
+  const t = C[lang];
   return (
     <div className="fixed bottom-6 end-4 z-40 hidden flex-col gap-3 md:flex">
       <a
-        href={waLink(WA_MSG)}
+        href={waLink(t.wa)}
         target="_blank"
         rel="noopener"
         onClick={() => track("whatsapp")}
-        aria-label="واتساب"
+        aria-label={t.ui.whatsapp}
         className="grid h-13 w-13 place-items-center rounded-full bg-[#25D366] p-3.5 shadow-lg transition hover:scale-105"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6 fill-white">
@@ -26,7 +27,7 @@ export function FloatingCtas() {
       <a
         href={`tel:${site.phoneIntl}`}
         onClick={() => track("call")}
-        aria-label="اتصال"
+        aria-label={t.ui.call}
         className="grid h-13 w-13 place-items-center rounded-full bg-ink p-3.5 shadow-lg transition hover:scale-105"
       >
         <svg viewBox="0 0 24 24" className="h-6 w-6 fill-brass-2">
@@ -37,7 +38,8 @@ export function FloatingCtas() {
   );
 }
 
-export function MobileBar() {
+export function MobileBar({ lang }: { lang: Lang }) {
+  const t = C[lang];
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-sand-2 bg-paper/98 backdrop-blur md:hidden">
       <a
@@ -45,28 +47,29 @@ export function MobileBar() {
         onClick={() => track("call")}
         className="py-3.5 text-center text-sm font-semibold text-ink"
       >
-        اتصل
+        {t.ui.call}
       </a>
       <a
-        href={waLink(WA_MSG)}
+        href={waLink(t.wa)}
         target="_blank"
         rel="noopener"
         onClick={() => track("whatsapp")}
         className="border-x border-sand-2 py-3.5 text-center text-sm font-semibold text-ink"
       >
-        واتساب
+        {t.ui.whatsapp}
       </a>
       <a
         href="#lead"
         className="bg-ink py-3.5 text-center text-sm font-semibold text-paper"
       >
-        سجّل
+        {t.ui.register}
       </a>
     </div>
   );
 }
 
-export function LeadPopup() {
+export function LeadPopup({ lang }: { lang: Lang }) {
+  const l = C[lang].lead;
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -101,25 +104,24 @@ export function LeadPopup() {
             setOpen(false);
             setDone(true);
           }}
-          aria-label="إغلاق"
+          aria-label={C[lang].ui.close}
           className="absolute end-4 top-4 text-2xl leading-none text-ink/50"
         >
           ✕
         </button>
-        <p className="eyebrow">Price List</p>
-        <h3 className="mt-3 text-2xl text-ink">استلم المتاح بالأسعار</h3>
-        <p className="mt-3 text-[15px] leading-8 text-ink/70">
-          اترك رقمك ويصلك المتاح والأسعار في كلوب سايد ريزيدنس وذا إميرالد وزد ستريب.
-        </p>
+        <p className="eyebrow">{l.popupEyebrow}</p>
+        <h3 className="mt-3 text-2xl text-ink">{l.popupTitle}</h3>
+        <p className="mt-3 pe-6 text-[15px] leading-8 text-ink/70">{l.popupSub}</p>
         <div className="mt-6">
-          <LeadForm compact />
+          <LeadForm lang={lang} compact />
         </div>
       </div>
     </div>
   );
 }
 
-export function CookieConsent() {
+export function CookieConsent({ lang }: { lang: Lang }) {
+  const ui = C[lang].ui;
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -135,9 +137,7 @@ export function CookieConsent() {
   return (
     <div className="fixed inset-x-3 bottom-16 z-50 mx-auto max-w-3xl rounded-xl bg-ink px-5 py-4 text-paper shadow-xl md:bottom-4">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="text-sm leading-7 text-paper/80">
-          نستخدم ملفات تعريف الارتباط لتحسين التجربة وقياس أداء الحملات.
-        </p>
+        <p className="text-sm leading-7 text-paper/80">{ui.cookie}</p>
         <button
           onClick={() => {
             try {
@@ -147,68 +147,50 @@ export function CookieConsent() {
           }}
           className="rounded-full bg-brass-2 px-5 py-2 text-sm font-semibold text-ink"
         >
-          موافق
+          {ui.ok}
         </button>
       </div>
     </div>
   );
 }
 
-export function Footer() {
+export function Footer({ lang }: { lang: Lang }) {
+  const t = C[lang];
+  const f = t.footer;
+  const L = t.legal;
   return (
     <footer className="bg-ink pb-24 pt-16 text-paper md:pb-16">
       <div className="mx-auto max-w-7xl px-5">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
             <p className="num text-lg tracking-[0.28em] text-paper">ZED EAST</p>
-            <p className="mt-2 text-sm text-brass-2">زد إيست — by ORA</p>
-            <p className="mt-4 text-sm leading-7 text-paper/60">
-              نهاية التسعين الجنوبي، التجمع الخامس، القاهرة الجديدة.
-            </p>
+            <p className="mt-2 text-sm text-brass-2">{f.tagline}</p>
+            <p className="mt-4 text-sm leading-7 text-paper/60">{f.address}</p>
           </div>
           <div>
-            <p className="text-sm text-paper/50">تواصل</p>
-            <a
-              href={`tel:${site.phoneIntl}`}
-              onClick={() => track("call")}
-              className="num mt-3 block text-lg text-paper"
-            >
+            <p className="text-sm text-paper/50">{f.contact}</p>
+            <a href={`tel:${site.phoneIntl}`} onClick={() => track("call")} dir="ltr" className="num mt-3 inline-block text-lg text-paper">
               {site.phoneDisplay}
             </a>
-            <a
-              href={waLink(WA_MSG)}
-              target="_blank"
-              rel="noopener"
-              onClick={() => track("whatsapp")}
-              className="mt-2 block text-sm text-paper/70 hover:text-brass-2"
-            >
-              واتساب
+            <a href={waLink(t.wa)} target="_blank" rel="noopener" onClick={() => track("whatsapp")} className="mt-2 block text-sm text-paper/70 hover:text-brass-2">
+              {t.ui.whatsapp}
             </a>
             <p className="mt-2 text-sm text-paper/60">{site.email}</p>
           </div>
           <div>
-            <p className="text-sm text-paper/50">روابط</p>
+            <p className="text-sm text-paper/50">{f.links}</p>
             <div className="mt-3 space-y-2 text-sm text-paper/70">
-              <Link href="/about" className="block hover:text-brass-2">
-                من نحن
-              </Link>
-              <Link href="/privacy" className="block hover:text-brass-2">
-                سياسة الخصوصية
-              </Link>
-              <Link href="/disclaimer" className="block hover:text-brass-2">
-                إخلاء المسؤولية
-              </Link>
+              <Link href={href(lang, "/about")} className="block hover:text-brass-2">{L.about.title}</Link>
+              <Link href={href(lang, "/privacy")} className="block hover:text-brass-2">{L.privacy.title}</Link>
+              <Link href={href(lang, "/disclaimer")} className="block hover:text-brass-2">{L.disclaimer.title}</Link>
+              <Link href={lang === "ar" ? "/en" : "/"} className="block hover:text-brass-2">{t.ui.otherLang}</Link>
             </div>
           </div>
         </div>
 
         <div className="ribbon-rule my-10" />
 
-        <p className="text-xs leading-7 text-paper/45">
-          {site.agency} وسيط عقاري مستقل، وهذا الموقع ليس الموقع الرسمي لشركة
-          أورا للتطوير العقاري. جميع الأسعار والمساحات استرشادية وقابلة للتغيير دون إشعار
-          مسبق، والمعتمد هو ما يصدر رسميًا من المطور.
-        </p>
+        <p className="text-xs leading-7 text-paper/45">{f.disclaimer}</p>
         <p className="mt-4 text-xs text-paper/35">
           <span dir="ltr" className="inline-block">
             © {new Date().getFullYear()} {site.agency} ·{" "}
