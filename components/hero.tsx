@@ -1,31 +1,89 @@
-import { C, type Lang } from "@/lib/content";
-import Photo from "./photo";
+import { site, fmt, minPrice, WA_DEFAULT } from "@/lib/site";
+import { Ribbon } from "./ui";
+import CtaWhatsapp from "./cta-whatsapp";
+import LeadForm from "./lead-form";
 
-export default function Hero({ lang }: { lang: Lang }) {
-  const t = C[lang].hero;
+const stats = [
+  { value: "0%", label: "مقدم في طروحات مختارة" },
+  { value: "10", label: "سنين تقسيط" },
+  { value: "4", label: "مشاريع شرق وغرب القاهرة" },
+  { value: "40", label: "فدان نادي ZED الرياضي" },
+];
+
+export default function Hero() {
   return (
-    <section id="top" className="mx-auto max-w-[1240px] px-5 pt-10 md:px-8 md:pt-16">
-      <div className="flex flex-wrap items-end justify-between gap-6 md:gap-8">
-        <div className="min-w-0 flex-[1_1_640px]">
-          <p className="text-sm font-semibold text-walnut md:text-[15px]">{t.eyebrow}</p>
-          <h1 className="mt-3 text-[48px] font-bold leading-[1.1] md:mt-4 md:whitespace-nowrap md:text-[88px] md:leading-[1.05]">{t.title}</h1>
-        </div>
-        <p className="flex-[0_1_420px] text-base leading-8 text-mute md:text-[19px] md:leading-9">{t.sub}</p>
+    <section id="top" className="relative overflow-hidden bg-ink">
+      <div className="absolute inset-0">
+        <img
+          src="/images/ze-hero.webp"
+          alt="زد إيست من أورا — المباني والمساحات الخضراء"
+          className="kenburns h-full w-full object-cover opacity-55"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/55" />
       </div>
 
-      <Photo src="/images/hero.jpg" alt={t.alt} className="mt-7 h-[260px] rounded-md md:mt-10 md:h-[560px]" />
+      <div className="relative mx-auto max-w-7xl px-5 pb-12 pt-24 md:pb-16 md:pt-28">
+        <div className="inline-flex items-center gap-2.5 rounded-full border border-brass-2/40 bg-ink/60 px-4 py-1.5 text-xs text-paper/85 backdrop-blur md:px-5 md:py-2 md:text-sm">
+          <span className="h-2 w-2 rounded-full bg-brass-2" />
+          المتاح الآن · زد إيست · سولانا إيست · زد ويست · سولانا ويست</div>
 
-      <dl className="grid grid-cols-2 gap-px border-b border-line bg-line md:grid-cols-4">
-        {t.facts.map((f) => (
-          <div key={f.l} className="flex flex-col-reverse bg-paper px-4 py-5 first:ps-0 md:px-7 md:py-7 [&:nth-child(3)]:ps-0 md:[&:nth-child(3)]:ps-7">
-            <dt className="mt-1 text-[13px] text-mute md:mt-1.5 md:text-[15px]">{f.l}</dt>
-            <dd className={`num text-[28px] font-semibold md:text-[40px] ${f.accent ? "text-walnut" : ""}`}>
-              {f.v}
-              {f.u && <span className="ms-1.5 text-[15px] md:text-xl">{f.u}</span>}
-            </dd>
+        <div className="mt-6 grid grid-cols-1 items-start gap-8 md:mt-8 lg:grid-cols-[1.1fr_420px] lg:gap-10">
+          <div>
+            <p className="eyebrow">ORA Developers · Availability</p>
+            <h1 className="mt-4 text-4xl leading-[1.25] text-paper md:text-6xl">
+              مشاريع أورا للتطوير العقاري
+            </h1>
+            <Ribbon light />
+            <p className="mt-4 max-w-xl text-base leading-8 text-paper/80 md:text-lg md:leading-9">
+              زد إيست وسولانا إيست في التجمع الخامس، وزد ويست وسولانا ويست في
+              الشيخ زايد ونيو زايد — شقق وڤيلات ومكاتب بمقدم يبدأ من 0% وتقسيط حتى
+              10 سنين. تبدأ من{" "}
+              <span className="num text-brass-2">{fmt(minPrice)}</span> جنيه.
+            </p>
+
+            <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+              <a
+                href="#units"
+                className="rounded-full bg-brass-2 px-4 py-3 text-center text-sm font-semibold text-ink transition hover:bg-brass-2/85 sm:px-7 sm:text-base"
+              >
+                الأسعار والوحدات
+              </a>
+              <CtaWhatsapp
+                message={WA_DEFAULT}
+                className="rounded-full border border-paper/30 px-4 py-3 text-center text-sm font-semibold text-paper transition hover:border-brass-2 hover:text-brass-2 sm:px-7 sm:text-base"
+              >
+                واتساب
+              </CtaWhatsapp>
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-paper/10 md:mt-10 md:grid-cols-4">
+              {stats.map((s) => (
+                <div key={s.label} className="bg-ink/85 px-4 py-4 md:px-5 md:py-5">
+                  <p className="num text-2xl text-brass-2">{s.value}</p>
+                  <p className="mt-1.5 text-xs leading-5 text-paper/60 md:mt-2 md:text-[13px] md:leading-6">
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-6 text-xs text-paper/45">
+              {site.agency} — وسيط عقاري مستقل. أسعار استرشادية قابلة للتغيير.
+            </p>
           </div>
-        ))}
-      </dl>
+
+          <div id="hero-form" className="rounded-2xl bg-paper p-5 shadow-2xl md:p-6">
+            <p className="eyebrow">Register Interest</p>
+            <h2 className="mt-2 text-xl text-ink">استلم الأسعار والمتاح</h2>
+            <p className="mt-2 text-sm leading-7 text-ink/60">
+              المتاح والأسعار وأنظمة السداد في كل مشاريع أورا.
+            </p>
+            <div className="mt-5">
+              <LeadForm compact />
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

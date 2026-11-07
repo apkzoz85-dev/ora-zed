@@ -1,35 +1,101 @@
-import { site } from "@/lib/site";
-import { C, type Lang } from "@/lib/content";
-import { WaLink, CallLink } from "./contact-links";
-import { WaIcon } from "./icons";
+"use client";
 
-export default function Header({ lang }: { lang: Lang }) {
-  const t = C[lang];
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { site, waLink } from "@/lib/site";
+import { track } from "@/lib/track";
+
+const nav = [
+  { href: "#products", label: "المشاريع" },
+  { href: "#units", label: "الوحدات والأسعار" },
+  { href: "#compare", label: "مقارنة" },
+  { href: "#calc", label: "حاسبة التقسيط" },
+  { href: "#location", label: "الموقع" },
+  { href: "#gallery", label: "الصور" },
+  { href: "#lead", label: "التسجيل" },
+];
+
+export default function Header() {
+  const [solid, setSolid] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setSolid(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1240px] items-center justify-between gap-3 px-5 py-3.5 md:px-8 md:py-4">
-        <a href="#top" className="flex items-baseline gap-3">
-          <span className="num whitespace-nowrap text-[14px] font-semibold tracking-[0.22em] md:text-[17px]">ZED EAST</span>
-          <span className="hidden text-[13px] text-mute sm:inline">by ORA</span>
-        </a>
-        <nav className="hidden gap-7 text-[15px] lg:flex">
-          {t.nav.map((n) => (
-            <a key={n.href} href={n.href} className="transition hover:text-walnut">{n.label}</a>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+        solid ? "bg-ink/95 backdrop-blur-sm shadow-lg" : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-5">
+        <Link href="/" className="flex flex-col leading-none">
+          <span className="num whitespace-nowrap text-[13px] tracking-[0.16em] text-paper sm:text-lg sm:tracking-[0.28em]">ORA PROJECTS</span>
+          <span className="mt-1 whitespace-nowrap text-[10px] text-brass-2 sm:text-[11px]">
+            زد إيست · سولانا إيست · زد ويست · سولانا ويست
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-7 lg:flex">
+          {nav.map((n) => (
+            <a
+              key={n.href}
+              href={n.href}
+              className="text-sm text-paper/80 transition hover:text-brass-2"
+            >
+              {n.label}
+            </a>
           ))}
         </nav>
+
         <div className="flex items-center gap-2">
-          <a href={t.otherHref} className="rounded-full px-2.5 py-2 text-[13px] font-semibold text-mute transition hover:text-ink md:text-sm">
-            {t.otherLang}
-          </a>
-          <CallLink className="num whitespace-nowrap rounded-full border border-ink px-3.5 py-2.5 text-[13px] font-semibold transition hover:bg-ink hover:text-paper md:px-[18px] md:text-[15px]">
+          <a
+            href={`tel:${site.phoneIntl}`}
+            onClick={() => track("call")}
+            className="num hidden rounded-full border border-paper/25 px-4 py-2 text-sm text-paper transition hover:border-brass-2 hover:text-brass-2 sm:block"
+          >
             {site.phoneDisplay}
-          </CallLink>
-          <WaLink lang={lang} className="hidden items-center gap-2 rounded-full bg-ink px-5 py-3 text-[15px] font-semibold text-paper transition hover:bg-ink-2 md:inline-flex">
-            <WaIcon className="h-[18px] w-[18px]" />
-            {t.whatsapp}
-          </WaLink>
+          </a>
+          <a
+            href={waLink(
+              "مهتم بمشاريع أورا للتطوير العقاري. برجاء إرسال الأسعار والمتاح."
+            )}
+            onClick={() => track("whatsapp")}
+            target="_blank"
+            rel="noopener"
+            className="whitespace-nowrap rounded-full bg-brass-2 px-4 py-2 text-[13px] font-semibold text-ink transition hover:bg-brass-2/85 sm:px-5 sm:text-sm"
+          >
+            تواصل الآن
+          </a>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label="القائمة"
+            aria-expanded={open}
+            className="ms-1 grid h-10 w-10 place-items-center rounded-full border border-paper/25 text-paper lg:hidden"
+          >
+            <span className="text-lg leading-none">{open ? "✕" : "☰"}</span>
+          </button>
         </div>
       </div>
+
+      {open && (
+        <nav className="border-t border-paper/10 bg-ink/98 px-5 py-4 lg:hidden">
+          {nav.map((n) => (
+            <a
+              key={n.href}
+              href={n.href}
+              onClick={() => setOpen(false)}
+              className="block border-b border-paper/10 py-3 text-paper/85"
+            >
+              {n.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

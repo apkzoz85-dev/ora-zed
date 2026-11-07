@@ -1,11 +1,12 @@
 {
-  "name": "zed-east",
+  "name": "ora-projects",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "16.4.5",
@@ -14,10 +15,10 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.3.5",
-    "@types/node": "^22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "tailwindcss": "4.3.5",
-    "typescript": "^5"
+    "typescript": "^5.7.3"
   }
 }
