@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Legal from "@/components/legal";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "إخلاء المسؤولية — مشاريع أورا" };
+export const metadata: Metadata = { title: "إخلاء المسؤولية — زد إيست" };
 
 export default function Page() {
   return (

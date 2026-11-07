@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { products, projects, projectOf, fmt } from "@/lib/site";
+import { products, fmt } from "@/lib/site";
 import { Reveal, Heading } from "./ui";
 import CtaWhatsapp from "./cta-whatsapp";
 
@@ -60,10 +60,10 @@ export default function Calculator() {
                 }}
                 className="mt-2 w-full rounded-lg border border-sand-2 bg-white px-4 py-3 text-[15px] text-ink"
               >
-                {projects.map((pr) => (
-                  <optgroup key={pr.slug} label={pr.name}>
-                    {options.filter((o) => o.project === pr.slug).map((o) => (
-                      <option key={o.id} value={o.id}>{o.label} · {o.product.split(" — ")[0]}</option>
+                {products.map((pr) => (
+                  <optgroup key={pr.slug} label={pr.name.split(" — ")[0]}>
+                    {options.filter((o) => o.product === pr.name).map((o) => (
+                      <option key={o.id} value={o.id}>{o.label}</option>
                     ))}
                   </optgroup>
                 ))}
@@ -83,7 +83,7 @@ export default function Calculator() {
                 onChange={(e) => setDownPct(Number(e.target.value))}
                 className="mt-3 w-full accent-[#b28a45]"
               />
-              <p className="mt-2 text-xs text-ink/50">{projectOf(sel.project).name} · النظام: {sel.dpLabel}</p>
+              <p className="mt-2 text-xs text-ink/50">النظام: {sel.dpLabel}</p>
 
               <div className="mt-6">
                 <p className="text-sm text-ink/70">دورية القسط</p>
@@ -135,7 +135,7 @@ export default function Calculator() {
               </div>
 
               <CtaWhatsapp
-                message={`مهتم بـ ${sel.label} في ${sel.product} من أورا بمقدم ${pct}%. برجاء إرسال جدول السداد الرسمي.`}
+                message={`مهتم بـ ${sel.label} في ${sel.product} — زد إيست بمقدم ${pct}%. برجاء إرسال جدول السداد الرسمي.`}
                 className="mt-6 inline-block rounded-full bg-brass-2 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-brass-2/85"
               >
                 اطلب جدول السداد الرسمي

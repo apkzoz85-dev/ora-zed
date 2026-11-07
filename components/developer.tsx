@@ -39,7 +39,7 @@ export default function Developer() {
           <Heading
             light
             eyebrow="The Developer"
-            title="من يقف خلف المشاريع"
+            title="من يقف خلف المشروع"
             sub="اسم المطور هو أهم ضمان في الطروحات الجديدة، وأورا من أقوى الأسماء في السوق."
           />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -53,10 +53,10 @@ export default function Developer() {
             ))}
           </div>
           <CtaWhatsapp
-            message="برجاء إرسال بروشورات مشاريع أورا والمتاح في كل مشروع."
+            message="برجاء إرسال بروشور زد إيست والمتاح."
             className="mt-8 inline-block rounded-full border border-paper/30 px-6 py-3 text-sm font-semibold text-paper transition hover:border-brass-2 hover:text-brass-2"
           >
-            اطلب البروشورات والمتاح
+            اطلب البروشور والمتاح
           </CtaWhatsapp>
         </Reveal>
       </div>

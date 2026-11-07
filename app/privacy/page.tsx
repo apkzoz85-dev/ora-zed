@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Legal from "@/components/legal";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "سياسة الخصوصية — مشاريع أورا" };
+export const metadata: Metadata = { title: "سياسة الخصوصية — زد إيست" };
 
 export default function Page() {
   return (
@@ -12,7 +12,7 @@ export default function Page() {
         نوع الوحدة المهتم بها، وأي ملاحظات تضيفها.
       </p>
       <p>
-        نستخدم هذه البيانات للتواصل معك بخصوص مشاريع أورا ومشروعات
+        نستخدم هذه البيانات للتواصل معك بخصوص زد إيست ومشروعات
         مشابهة قد تناسب اهتمامك، ولا نبيعها أو نؤجرها لأي جهة خارجية.
       </p>
       <p>

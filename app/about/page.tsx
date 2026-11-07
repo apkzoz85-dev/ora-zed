@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Legal from "@/components/legal";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = { title: "من نحن — مشاريع أورا" };
+export const metadata: Metadata = { title: "من نحن — زد إيست" };
 
 export default function Page() {
   return (
@@ -12,8 +12,7 @@ export default function Page() {
         السوق المصري، وتقدم استشارات شراء واستثمار للعملاء داخل مصر والخليج.
       </p>
       <p>
-        هذه الصفحة مخصصة لعرض المتاح في مشاريع أورا للتطوير العقاري — زد إيست وسولانا
-        إيست وزد ويست وسولانا ويست — وليست الموقع الرسمي للمطور. مهمتنا تقديم بيانات
+        هذه الصفحة مخصصة لعرض المتاح في زد إيست من أورا للتطوير العقاري وليست الموقع الرسمي للمطور. مهمتنا تقديم بيانات
         المشروع وخطط السداد وترتيب المعاينة والتعاقد الرسمي مع المطور.
       </p>
       <p>

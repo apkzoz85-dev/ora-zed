@@ -6,7 +6,7 @@ import { site, waLink } from "@/lib/site";
 import { track } from "@/lib/track";
 import LeadForm from "./lead-form";
 
-const WA_MSG = "مهتم بمشاريع أورا للتطوير العقاري. برجاء إرسال الأسعار والمتاح.";
+const WA_MSG = "مهتم بزد إيست من أورا. برجاء إرسال الأسعار والمتاح.";
 
 export function FloatingCtas() {
   return (
@@ -109,7 +109,7 @@ export function LeadPopup() {
         <p className="eyebrow">Price List</p>
         <h3 className="mt-3 text-2xl text-ink">استلم المتاح بالأسعار</h3>
         <p className="mt-3 text-[15px] leading-8 text-ink/70">
-          اترك رقمك ويصلك المتاح والأسعار في زد إيست وسولانا إيست وزد ويست وسولانا ويست.
+          اترك رقمك ويصلك المتاح والأسعار في كلوب سايد ريزيدنس وذا إميرالد وزد ستريب.
         </p>
         <div className="mt-6">
           <LeadForm compact />
@@ -160,10 +160,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <p className="num text-lg tracking-[0.28em] text-paper">ORA PROJECTS</p>
-            <p className="mt-2 text-sm text-brass-2">مشاريع أورا للتطوير العقاري</p>
+            <p className="num text-lg tracking-[0.28em] text-paper">ZED EAST</p>
+            <p className="mt-2 text-sm text-brass-2">زد إيست — by ORA</p>
             <p className="mt-4 text-sm leading-7 text-paper/60">
-              التجمع الخامس · الشيخ زايد · نيو زايد
+              نهاية التسعين الجنوبي، التجمع الخامس، القاهرة الجديدة.
             </p>
           </div>
           <div>

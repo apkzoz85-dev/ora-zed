@@ -4,10 +4,10 @@ import CtaWhatsapp from "./cta-whatsapp";
 import LeadForm from "./lead-form";
 
 const stats = [
-  { value: "0%", label: "مقدم في طروحات مختارة" },
+  { value: "0%", label: "مقدم — كلوب سايد ريزيدنس" },
   { value: "10", label: "سنين تقسيط" },
-  { value: "4", label: "مشاريع شرق وغرب القاهرة" },
   { value: "40", label: "فدان نادي ZED الرياضي" },
+  { value: "3", label: "طروحات متاحة" },
 ];
 
 export default function Hero() {
@@ -25,18 +25,18 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-5 pb-12 pt-24 md:pb-16 md:pt-28">
         <div className="inline-flex items-center gap-2.5 rounded-full border border-brass-2/40 bg-ink/60 px-4 py-1.5 text-xs text-paper/85 backdrop-blur md:px-5 md:py-2 md:text-sm">
           <span className="h-2 w-2 rounded-full bg-brass-2" />
-          المتاح الآن · زد إيست · سولانا إيست · زد ويست · سولانا ويست</div>
+          المتاح الآن · كلوب سايد ريزيدنس · ذا إميرالد · زد ستريب</div>
 
         <div className="mt-6 grid grid-cols-1 items-start gap-8 md:mt-8 lg:grid-cols-[1.1fr_420px] lg:gap-10">
           <div>
-            <p className="eyebrow">ORA Developers · Availability</p>
+            <p className="eyebrow">ZED East · by ORA</p>
             <h1 className="mt-4 text-4xl leading-[1.25] text-paper md:text-6xl">
-              مشاريع أورا للتطوير العقاري
+              زد إيست
             </h1>
             <Ribbon light />
             <p className="mt-4 max-w-xl text-base leading-8 text-paper/80 md:text-lg md:leading-9">
-              زد إيست وسولانا إيست في التجمع الخامس، وزد ويست وسولانا ويست في
-              الشيخ زايد ونيو زايد — شقق وڤيلات ومكاتب بمقدم يبدأ من 0% وتقسيط حتى
+              مجتمع أورا في التجمع الخامس حول نادي ZED الرياضي — شقق مخدومة بدون
+              مقدم، وآخر طرح ڤيلات ذا إميرالد، ووحدات إدارية في زد ستريب، وتقسيط
               10 سنين. تبدأ من{" "}
               <span className="num text-brass-2">{fmt(minPrice)}</span> جنيه.
             </p>
@@ -76,7 +76,7 @@ export default function Hero() {
             <p className="eyebrow">Register Interest</p>
             <h2 className="mt-2 text-xl text-ink">استلم الأسعار والمتاح</h2>
             <p className="mt-2 text-sm leading-7 text-ink/60">
-              المتاح والأسعار وأنظمة السداد في كل مشاريع أورا.
+              المتاح والأسعار وأنظمة السداد في زد إيست.
             </p>
             <div className="mt-5">
               <LeadForm compact />

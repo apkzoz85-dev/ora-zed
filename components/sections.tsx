@@ -27,8 +27,8 @@ export function Location() {
         <Reveal delay={70}>
           <div className="frame h-full min-h-[340px]">
             <img
-              src="/images/ze-aerial.webp"
-              alt="الماستر بلان — زد إيست من أورا"
+              src="/images/ze-park.webp"
+              alt="المساحات الخضراء في زد إيست"
               className="h-full w-full object-cover"
             />
           </div>
@@ -45,8 +45,8 @@ export function Amenities() {
         <Reveal>
           <Heading
             eyebrow="The Lifestyle"
-            title="الحياة في مشاريع أورا"
-            sub="نادي رياضي على 40 فدان في زد إيست، وشقق مخدومة بإدارة أورا، ومنطقة تجارية وعيادات."
+            title="الحياة في زد إيست"
+            sub="نادي رياضي على 40 فدان، وشقق مخدومة بإدارة أورا، وبحيرة الإميرالد، ومنطقة تجارية على المدخل."
           />
         </Reveal>
         <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -75,10 +75,10 @@ const shots = [
   { src: "/images/ze-park.webp", alt: "المساحات الخضراء في زد إيست" },
   { src: "/images/ze-interior.webp", alt: "تصميم داخلي — ذا إميرالد" },
   { src: "/images/ze-row.webp", alt: "دوبلكس — ذا إميرالد" },
-  { src: "/images/res-garden.webp", alt: "سولانا إيست لين — المباني السكنية" },
-  { src: "/images/medica-plaza.webp", alt: "بلازا ميديكا — سولانا إيست لين" },
+  { src: "/images/ze-aerial.webp", alt: "منظر علوي — زد إيست" },
+  { src: "/images/ze-fourplex.webp", alt: "فوربلكس — ذا إميرالد" },
   { src: "/images/ze-csr-1.webp", alt: "مباني كلوب ريزيدنس — زد إيست" },
-  { src: "/images/medica-clinic.webp", alt: "عيادة متشطبة — ميديكا" },
+  { src: "/images/ze-csr-5.webp", alt: "كلوب ريزيدنس — زد إيست" },
 ];
 
 export function Gallery() {
@@ -89,8 +89,8 @@ export function Gallery() {
           <Heading
             light
             eyebrow="Gallery"
-            title="من داخل مشاريع أورا"
-            sub="صور من زد إيست (ذا إميرالد، كلوب سايد ريزيدنس، النادي، زد ستريب) وسولانا إيست لين."
+            title="من داخل زد إيست"
+            sub="ذا إميرالد كوليكشن، كلوب ريزيدنس، نادي ZED الرياضي، وزد ستريب."
           />
         </Reveal>
         <div className="mt-10 grid grid-cols-2 gap-3 md:mt-12 md:gap-4 lg:grid-cols-3">

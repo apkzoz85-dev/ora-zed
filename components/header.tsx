@@ -6,7 +6,7 @@ import { site, waLink } from "@/lib/site";
 import { track } from "@/lib/track";
 
 const nav = [
-  { href: "#products", label: "المشاريع" },
+  { href: "#products", label: "الطروحات" },
   { href: "#units", label: "الوحدات والأسعار" },
   { href: "#compare", label: "مقارنة" },
   { href: "#calc", label: "حاسبة التقسيط" },
@@ -34,9 +34,9 @@ export default function Header() {
     >
       <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-5">
         <Link href="/" className="flex flex-col leading-none">
-          <span className="num whitespace-nowrap text-[13px] tracking-[0.16em] text-paper sm:text-lg sm:tracking-[0.28em]">ORA PROJECTS</span>
+          <span className="num whitespace-nowrap text-[13px] tracking-[0.16em] text-paper sm:text-lg sm:tracking-[0.28em]">ZED EAST</span>
           <span className="mt-1 whitespace-nowrap text-[10px] text-brass-2 sm:text-[11px]">
-            زد إيست · سولانا إيست · زد ويست · سولانا ويست
+            by ORA — التجمع الخامس
           </span>
         </Link>
 
@@ -62,7 +62,7 @@ export default function Header() {
           </a>
           <a
             href={waLink(
-              "مهتم بمشاريع أورا للتطوير العقاري. برجاء إرسال الأسعار والمتاح."
+              "مهتم بزد إيست من أورا. برجاء إرسال الأسعار والمتاح."
             )}
             onClick={() => track("whatsapp")}
             target="_blank"

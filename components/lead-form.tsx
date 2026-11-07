@@ -8,13 +8,13 @@ import { Reveal, Heading } from "./ui";
 import CtaWhatsapp from "./cta-whatsapp";
 
 const interests = [
-  "زد إيست — كلوب سايد ريزيدنس",
-  "زد إيست — ذا إميرالد",
-  "زد إيست — زد ستريب (إداري)",
-  "سولانا إيست — شقق / ڤيلات / مكاتب",
-  "سولانا إيست لين — شقق فندقية / عيادات",
-  "زد ويست — PSR",
-  "سولانا ويست",
+  "كلوب سايد ريزيدنس — ستوديو",
+  "كلوب سايد ريزيدنس — غرفة",
+  "كلوب سايد ريزيدنس — غرفتين",
+  "كلوب سايد ريزيدنس — 3 غرف",
+  "ذا إميرالد — دوبلكس / فوربلكس",
+  "ذا إميرالد — تاون هاوس / ڤيلا",
+  "زد ستريب — وحدة إدارية",
   "غير محدد / أريد استشارة",
 ];
 
@@ -42,7 +42,7 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
     }
 
     data.append("access_key", site.web3forms);
-    data.append("subject", `عميل جديد — مشاريع أورا${data.get("interest") ? ` (${data.get("interest")})` : ""}`);
+    data.append("subject", `عميل جديد — زد إيست${data.get("interest") ? ` (${data.get("interest")})` : ""}`);
     data.append("from_name", site.agency);
 
     setBusy(true);
@@ -156,7 +156,7 @@ export default function LeadForm({ compact = false }: { compact?: boolean }) {
             </li>
           </ul>
           <CtaWhatsapp
-            message="مهتم بمشاريع أورا للتطوير العقاري. برجاء إرسال الأسعار والمتاح."
+            message="مهتم بزد إيست من أورا. برجاء إرسال الأسعار والمتاح."
             className="mt-8 inline-block text-[15px] text-ink underline underline-offset-8 transition hover:text-brass"
           >
             أو تواصل عبر واتساب مباشرة

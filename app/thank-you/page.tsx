@@ -3,7 +3,7 @@ import Link from "next/link";
 import { site, waLink } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "تم استلام بياناتك — مشاريع أورا",
+  title: "تم استلام بياناتك — زد إيست",
   robots: { index: false, follow: false },
 };
 
@@ -18,11 +18,11 @@ export default function Page() {
         <div className="ribbon-rule mx-auto mt-6 w-40" />
         <p className="mt-6 text-[15px] leading-8 text-paper/70">
           سيتواصل معك أحد مستشاري المبيعات خلال دقائق لإرسال المتاح الحالي بالأسعار
-          والمساحات المتاحة في مشاريع أورا.
+          والمساحات المتاحة في زد إيست.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a
-            href={waLink("سجلت بياناتي على الموقع وأنتظر أسعار مشاريع أورا.")}
+            href={waLink("سجلت بياناتي على الموقع وأنتظر أسعار زد إيست.")}
             target="_blank"
             rel="noopener"
             className="rounded-full bg-brass-2 px-7 py-3 font-semibold text-ink"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { products, projects, projectOf, fmt, waLink } from "@/lib/site";
+import { products, projectOf, fmt, waLink } from "@/lib/site";
 import { Reveal, Heading, Pic } from "./ui";
 import { track } from "@/lib/track";
 
@@ -11,7 +11,7 @@ const cards = products.flatMap((p) =>
       const pr = projectOf(p.project);
       return {
         key: `${p.slug}-${u.type}-${u.spec}`,
-        project: p.project,
+        project: p.slug,
         projectName: pr.name,
         projectEn: pr.nameEn,
         product: p.name,
@@ -27,7 +27,7 @@ const cards = products.flatMap((p) =>
   )
 );
 
-const tabs = [{ id: "all", label: "كل المشاريع" }, ...projects.map((p) => ({ id: p.slug, label: p.name }))];
+const tabs = [{ id: "all", label: "كل الوحدات" }, ...products.map((p) => ({ id: p.slug, label: p.name.split(" — ")[0] }))];
 
 export default function Units() {
   const [tab, setTab] = useState("all");
@@ -37,7 +37,7 @@ export default function Units() {
   useEffect(() => {
     const sync = () => {
       const m = location.hash.match(/^#units-(.+)$/);
-      if (m && projects.some((p) => p.slug === m[1])) {
+      if (m && products.some((p) => p.slug === m[1])) {
         setTab(m[1]);
         document.getElementById("units")?.scrollIntoView({ behavior: "smooth" });
       }
@@ -59,7 +59,7 @@ export default function Units() {
           <Heading
             light
             eyebrow="Units & Prices"
-            title="الوحدات والأسعار — المتاح من أورا"
+            title="وحدات وأسعار زد إيست"
             sub="أسعار بداية كل نوع حسب آخر متاح من أورا. الأسعار استرشادية وتتغير مع المتاح، والمعتمد جدول السداد الرسمي وقت التعاقد."
           />
         </Reveal>
@@ -98,7 +98,7 @@ export default function Units() {
                 <div className="relative h-40 w-full md:h-44">
                   <Pic src={c.image} alt={`${c.type} ${c.spec} — ${c.projectName}`} label={c.projectEn} className="h-40 w-full md:h-44" />
                   <span className="num absolute end-3 top-3 rounded-full bg-ink/85 px-3 py-1 text-[11px] tracking-[0.12em] text-brass-2">
-                    {c.projectEn}
+                    {c.productEn}
                   </span>
                 </div>
 
@@ -126,7 +126,7 @@ export default function Units() {
 
                   <div className="mt-auto flex gap-2 pt-6">
                     <a
-                      href={waLink(`مهتم بـ ${c.type} ${c.spec} في ${c.product} من أورا. برجاء إرسال المتاح وخطة السداد.`)}
+                      href={waLink(`مهتم بـ ${c.type} ${c.spec} في ${c.product} — زد إيست من أورا. برجاء إرسال المتاح وخطة السداد.`)}
                       target="_blank"
                       rel="noopener"
                       onClick={() => track("whatsapp")}
@@ -147,7 +147,7 @@ export default function Units() {
         <p className="mt-4 text-xs text-paper/50 md:hidden">اسحب لعرض باقي الوحدات ←</p>
 
         <p className="mt-10 text-xs leading-6 text-paper/45">
-          الأسعار المعروضة أسعار بداية (Starting Price) حسب آخر متاح من أورا، وتختلف حسب المساحة والدور والموقع. عيادات ميديكا عليها وديعة صيانة 10%.
+          الأسعار المعروضة أسعار بداية (Starting Price) حسب آخر متاح من أورا، وتختلف حسب المساحة والدور والموقع. الأسعار تختلف حسب الدور والإطلالة والموقع داخل المشروع.
         </p>
       </div>
     </section>
