@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #1e1c19;
+  --color-ink-2: #34302b;
+  --color-paper: #f2eee7;
+  --color-card: #fbf9f5;
+  --color-line: #d9d1c5;
+  --color-mute: #5e574f;
+  --color-walnut: #7a4a33;
+  --color-walnut-2: #a9765b;
+  --color-bar: #cfc4b4;
+  --color-wa: #1f7a47;
+  --color-wa-2: #186339;
+
+  --font-display: "Alexandria", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+html, body { overflow-x: clip; }
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+html[lang="en"] body { font-family: "Alexandria", system-ui, sans-serif; }
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+}
+
+.num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-walnut);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
