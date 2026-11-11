@@ -266,7 +266,7 @@ export default function Landing({ lang }: { lang: Lang }) {
                   {t.levora.cta}
                 </LeadButton>
                 <WaLink
-                  msg={u.wa(t.offers[0].short, "57–146 m²", "ORA")}
+                  msg={u.wa(t.offers[0].short, "64–146 m²", "ORA")}
                   className="flex items-center justify-center gap-2 rounded-lg bg-wa px-6 py-4 font-bold text-white"
                 >
                   <WhatsAppIcon /> {t.ui.whatsapp}
@@ -317,7 +317,7 @@ export default function Landing({ lang }: { lang: Lang }) {
               {t.offers.map((o) => (
                 <a
                   key={o.slug}
-                  href={`#${o.slug}`}
+                  href={`#units-${o.slug}`}
                   className="rounded-full border border-deep/20 px-4 py-2 text-sm font-semibold text-deep transition hover:bg-deep hover:text-white"
                 >
                   {o.short}
@@ -326,7 +326,7 @@ export default function Landing({ lang }: { lang: Lang }) {
             </nav>
 
             {t.offers.map((o) => (
-              <div key={o.slug} id={o.slug} className="mt-12 scroll-mt-24">
+              <div key={o.slug} id={`units-${o.slug}`} className="mt-12 scroll-mt-24">
                 <Reveal>
                   <div className="flex flex-col gap-3 border-b border-ink/10 pb-5 md:flex-row md:items-end md:justify-between">
                     <div className="max-w-2xl">
