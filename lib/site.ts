@@ -3,14 +3,14 @@
 // ─────────────────────────────────────────────────────────────
 
 export const site = {
-  url: "https://orapropertiese.org", // ← الدومين الفعلي (بدون / في الآخر)
+  url: "https://www.orazed.org/", // ← الدومين الفعلي (بدون / في الآخر)
   agency: "Grandeur Spaces",
 
   /** رقم الاتصال والواتساب (نفس الرقم للاتنين) */
   phoneIntl: "+201030083122",
   phoneDisplay: "01030083122",
   whatsapp: "201030083122",
-  email: "leads@grandeur-spaces.com",
+  email: "leads@orazed.org",
 
   /**
    * ▼▼▼ Web3Forms ▼▼▼
@@ -18,7 +18,7 @@ export const site = {
    * المفتاح بيتجاب من https://web3forms.com بالإيميل اللي عايز الليدز توصل عليه.
    * لو المفتاح فاضي: الفورم بيحوّل العميل على واتساب ببياناته عشان مفيش ليد يضيع.
    */
-  web3forms: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "f8edb7d0-abd8-49c6-bf1c-f71073b981dc",
+  web3forms: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "0c24e560-4880-487d-a436-d00d678d8204",
 
   // Google Ads — gtag: "AW-XXXXXXXXXX" · conv: "AW-XXXXXXXXXX/label"
   gtag: "",
