@@ -2,204 +2,138 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { site, waLink } from "@/lib/site";
-import { C, href, type Lang } from "@/lib/content";
-import { track } from "@/lib/track";
-import LeadForm from "./lead-form";
+import { Phone } from "lucide-react";
+import { CallLink, LeadButton, WaLink, WhatsAppIcon, useLang, useT } from "./actions";
+import { href } from "@/lib/content";
 
-
-export function FloatingCtas({ lang }: { lang: Lang }) {
-  const t = C[lang];
+export function Wordmark({ light = false }: { light?: boolean }) {
   return (
-    <div className="fixed bottom-6 end-4 z-40 hidden flex-col gap-3 md:flex">
-      <a
-        href={waLink(t.wa)}
-        target="_blank"
-        rel="noopener"
-        onClick={() => track("whatsapp")}
-        aria-label={t.ui.whatsapp}
-        className="grid h-13 w-13 place-items-center rounded-full bg-[#25D366] p-3.5 shadow-lg transition hover:scale-105"
-      >
-        <svg viewBox="0 0 24 24" className="h-6 w-6 fill-white">
-          <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.38a9.86 9.86 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm5.8 14.06c-.25.69-1.44 1.32-1.99 1.36-.53.04-1.02.22-3.45-.72-2.9-1.15-4.74-4.12-4.88-4.31-.14-.19-1.16-1.55-1.16-2.96 0-1.41.74-2.1 1-2.39.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.3.37-.42.5-.14.14-.29.29-.12.57.16.29.73 1.2 1.56 1.95 1.07.95 1.97 1.25 2.26 1.39.28.14.45.12.61-.07.17-.19.71-.83.9-1.11.19-.29.38-.24.64-.14.26.09 1.67.79 1.95.93.29.14.48.22.55.34.07.12.07.69-.18 1.39Z" />
-        </svg>
-      </a>
-      <a
-        href={`tel:${site.phoneIntl}`}
-        onClick={() => track("call")}
-        aria-label={t.ui.call}
-        className="grid h-13 w-13 place-items-center rounded-full bg-ink p-3.5 shadow-lg transition hover:scale-105"
-      >
-        <svg viewBox="0 0 24 24" className="h-6 w-6 fill-brass-2">
-          <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2Z" />
-        </svg>
-      </a>
-    </div>
+    <a href="#top" className="flex flex-col leading-none" aria-label="ZED East by ORA" dir="ltr">
+      <span className={`font-latin text-[1.35rem] font-semibold tracking-[0.14em] ${light ? "text-white" : "text-deep"}`}>
+        ZED EAST
+      </span>
+      <span className={`mt-1 font-latin text-[0.62rem] font-semibold tracking-[0.34em] ${light ? "text-white/75" : "text-accent"}`}>
+        BY ORA · NEW CAIRO
+      </span>
+    </a>
   );
 }
 
-export function MobileBar({ lang }: { lang: Lang }) {
-  const t = C[lang];
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-sand-2 bg-paper/98 backdrop-blur md:hidden">
-      <a
-        href={`tel:${site.phoneIntl}`}
-        onClick={() => track("call")}
-        className="py-3.5 text-center text-sm font-semibold text-ink"
-      >
-        {t.ui.call}
-      </a>
-      <a
-        href={waLink(t.wa)}
-        target="_blank"
-        rel="noopener"
-        onClick={() => track("whatsapp")}
-        className="border-x border-sand-2 py-3.5 text-center text-sm font-semibold text-ink"
-      >
-        {t.ui.whatsapp}
-      </a>
-      <a
-        href="#lead"
-        className="bg-ink py-3.5 text-center text-sm font-semibold text-paper"
-      >
-        {t.ui.register}
-      </a>
-    </div>
-  );
-}
-
-export function LeadPopup({ lang }: { lang: Lang }) {
-  const l = C[lang].lead;
-  const [open, setOpen] = useState(false);
-  const [done, setDone] = useState(false);
-
+export function Header() {
+  const t = useT();
+  const lang = useLang();
+  const [solid, setSolid] = useState(false);
   useEffect(() => {
-    if (done) return;
-    let fired = false;
-    const fire = () => {
-      if (fired) return;
-      fired = true;
-      setOpen(true);
-    };
-    const t = setTimeout(fire, 16000);
-    const onScroll = () => {
-      const p =
-        window.scrollY / (document.body.scrollHeight - window.innerHeight);
-      if (p > 0.55) fire();
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [done]);
-
-  if (!open) return null;
-
+    const f = () => setSolid(window.scrollY > 40);
+    f();
+    window.addEventListener("scroll", f, { passive: true });
+    return () => window.removeEventListener("scroll", f);
+  }, []);
   return (
-    <div className="fixed inset-0 z-[60] grid place-items-center bg-ink/70 px-4 py-8">
-      <div className="relative max-h-full w-full max-w-md overflow-y-auto rounded-2xl bg-paper p-7">
-        <button
-          onClick={() => {
-            setOpen(false);
-            setDone(true);
-          }}
-          aria-label={C[lang].ui.close}
-          className="absolute end-4 top-4 text-2xl leading-none text-ink/50"
-        >
-          ✕
-        </button>
-        <p className="eyebrow">{l.popupEyebrow}</p>
-        <h3 className="mt-3 text-2xl text-ink">{l.popupTitle}</h3>
-        <p className="mt-3 pe-6 text-[15px] leading-8 text-ink/70">{l.popupSub}</p>
-        <div className="mt-6">
-          <LeadForm lang={lang} compact />
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        solid ? "bg-cream/95 shadow-md backdrop-blur" : "bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
+        <Wordmark light={!solid} />
+        <nav className="hidden items-center gap-5 lg:flex" aria-label={t.ui.navLabel}>
+          {t.ui.nav.map(([h, label]) => (
+            <a
+              key={h}
+              href={h}
+              className={`text-sm font-medium transition hover:opacity-70 ${solid ? "text-ink" : "text-white"}`}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+        <div className="flex items-center gap-2">
+          <Link
+            href={href(lang === "ar" ? "en" : "ar")}
+            aria-label={t.ui.otherLangLabel}
+            className={`flex size-10 items-center justify-center rounded-lg border text-sm font-bold ${
+              solid ? "border-deep/25 text-deep" : "border-white/50 text-white"
+            }`}
+          >
+            {t.ui.otherLang}
+          </Link>
+          <CallLink
+            label={t.ui.callUs}
+            className={`hidden items-center gap-2 rounded-lg border px-3.5 py-2.5 text-sm font-bold xl:flex ${
+              solid ? "border-deep/25 text-deep" : "border-white/50 text-white"
+            }`}
+          />
+          <LeadButton
+            source="header"
+            className="rounded-lg bg-cta px-4 py-2.5 text-sm font-bold text-white transition hover:bg-cta-2"
+          >
+            {t.ui.register}
+          </LeadButton>
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 
-export function CookieConsent({ lang }: { lang: Lang }) {
-  const ui = C[lang].ui;
-  const [show, setShow] = useState(false);
+/** شريط الموبايل السفلي + زرّي واتساب واتصال العائمين للديسكتوب */
+export function StickyActions() {
+  const t = useT();
+  return (
+    <>
+      <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-[1fr_1fr_1.4fr] gap-px border-t border-ink/10 bg-ink/10 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_24px_rgb(0_0_0/0.12)] md:hidden">
+        <CallLink label={t.ui.call} className="flex items-center justify-center gap-2 bg-white py-3.5 text-sm font-bold text-deep">
+          <Phone className="size-4" aria-hidden />
+          {t.ui.call}
+        </CallLink>
+        <WaLink className="flex items-center justify-center gap-2 bg-white py-3.5 text-sm font-bold text-wa">
+          <WhatsAppIcon className="size-5" />
+          {t.ui.whatsapp}
+        </WaLink>
+        <LeadButton source="mobile-bar" className="bg-cta py-3.5 text-sm font-bold text-white">
+          {t.ui.getPrices}
+        </LeadButton>
+      </div>
 
+      <div className="fixed bottom-6 end-6 z-40 hidden flex-col gap-3 md:flex">
+        <CallLink
+          label={t.ui.callUs}
+          className="flex size-14 items-center justify-center rounded-full bg-deep text-white shadow-xl transition hover:bg-cta"
+        >
+          <Phone className="size-6" aria-hidden />
+        </CallLink>
+        <WaLink
+          label={t.ui.whatsapp}
+          className="wa-pulse flex size-14 items-center justify-center rounded-full bg-wa text-white shadow-xl"
+        >
+          <WhatsAppIcon className="size-7" />
+        </WaLink>
+      </div>
+    </>
+  );
+}
+
+export function CookieConsent() {
+  const t = useT();
+  const [show, setShow] = useState(false);
   useEffect(() => {
     try {
-      if (!window.localStorage.getItem("cookie-ok")) setShow(true);
-    } catch {
-      setShow(true);
-    }
+      if (!localStorage.getItem("cookie_ok")) setShow(true);
+    } catch {}
   }, []);
-
   if (!show) return null;
-
+  const ok = () => {
+    try {
+      localStorage.setItem("cookie_ok", "1");
+    } catch {}
+    setShow(false);
+  };
   return (
-    <div className="fixed inset-x-3 bottom-16 z-50 mx-auto max-w-3xl rounded-xl bg-ink px-5 py-4 text-paper shadow-xl md:bottom-4">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <p className="text-sm leading-7 text-paper/80">{ui.cookie}</p>
-        <button
-          onClick={() => {
-            try {
-              window.localStorage.setItem("cookie-ok", "1");
-            } catch {}
-            setShow(false);
-          }}
-          className="rounded-full bg-brass-2 px-5 py-2 text-sm font-semibold text-ink"
-        >
-          {ui.ok}
-        </button>
-      </div>
+    <div className="fixed inset-x-3 bottom-[68px] z-30 mx-auto flex max-w-xl items-center gap-3 rounded-xl bg-ink/95 px-4 py-3 text-xs text-white shadow-xl md:bottom-5 md:start-5 md:end-auto md:mx-0">
+      <p className="flex-1 leading-relaxed">{t.ui.cookie}</p>
+      <button onClick={ok} className="rounded-md bg-white px-3 py-1.5 font-bold text-ink">
+        {t.ui.ok}
+      </button>
     </div>
-  );
-}
-
-export function Footer({ lang }: { lang: Lang }) {
-  const t = C[lang];
-  const f = t.footer;
-  const L = t.legal;
-  return (
-    <footer className="bg-ink pb-24 pt-16 text-paper md:pb-16">
-      <div className="mx-auto max-w-7xl px-5">
-        <div className="grid gap-10 md:grid-cols-3">
-          <div>
-            <p className="num text-lg tracking-[0.28em] text-paper">ZED EAST</p>
-            <p className="mt-2 text-sm text-brass-2">{f.tagline}</p>
-            <p className="mt-4 text-sm leading-7 text-paper/60">{f.address}</p>
-          </div>
-          <div>
-            <p className="text-sm text-paper/50">{f.contact}</p>
-            <a href={`tel:${site.phoneIntl}`} onClick={() => track("call")} dir="ltr" className="num mt-3 inline-block text-lg text-paper">
-              {site.phoneDisplay}
-            </a>
-            <a href={waLink(t.wa)} target="_blank" rel="noopener" onClick={() => track("whatsapp")} className="mt-2 block text-sm text-paper/70 hover:text-brass-2">
-              {t.ui.whatsapp}
-            </a>
-            <p className="mt-2 text-sm text-paper/60">{site.email}</p>
-          </div>
-          <div>
-            <p className="text-sm text-paper/50">{f.links}</p>
-            <div className="mt-3 space-y-2 text-sm text-paper/70">
-              <Link href={href(lang, "/about")} className="block hover:text-brass-2">{L.about.title}</Link>
-              <Link href={href(lang, "/privacy")} className="block hover:text-brass-2">{L.privacy.title}</Link>
-              <Link href={href(lang, "/disclaimer")} className="block hover:text-brass-2">{L.disclaimer.title}</Link>
-              <Link href={lang === "ar" ? "/en" : "/"} className="block hover:text-brass-2">{t.ui.otherLang}</Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="ribbon-rule my-10" />
-
-        <p className="text-xs leading-7 text-paper/45">{f.disclaimer}</p>
-        <p className="mt-4 text-xs text-paper/35">
-          <span dir="ltr" className="inline-block">
-            © {new Date().getFullYear()} {site.agency} ·{" "}
-            <a href={site.agencyCredit.url} target="_blank" rel="nofollow noopener" className="hover:text-brass-2">
-              Designed &amp; Managed by {site.agencyCredit.name}
-            </a>
-          </span>
-        </p>
-      </div>
-    </footer>
   );
 }

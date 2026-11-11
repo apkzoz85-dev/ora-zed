@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import "@fontsource/ibm-plex-sans-arabic/400.css";
+import "@fontsource/ibm-plex-sans-arabic/500.css";
+import "@fontsource/ibm-plex-sans-arabic/600.css";
+import "@fontsource/ibm-plex-sans-arabic/700.css";
+import "@fontsource-variable/alexandria";
+import "@fontsource/cormorant-garamond/600.css";
 import { site } from "@/lib/site";
 import { C, href, type Lang } from "@/lib/content";
 
@@ -35,8 +41,9 @@ const jsonLd = {
     { "@type": "RealEstateAgent", name: site.agency, url: site.url, telephone: site.phoneIntl, email: site.email, areaServed: "New Cairo, Egypt" },
     {
       "@type": "Place",
-      name: "ZED East by ORA",
-      description: "ORA Developers community in New Cairo (Fifth Settlement) around the 40-acre ZED Sports Club: Club Side Residence, The Emerald Collection and ZED Strip.",
+      name: "ZED East by ORA — Levora Tower",
+      description:
+        "ORA Developers community in New Cairo (Fifth Settlement) around the 40-feddan ZED Sports Club: Levora Tower serviced residences, Club Side Residence, The Emerald Collection and ZED Strip.",
       address: { "@type": "PostalAddress", addressLocality: "South 90th St., Fifth Settlement, New Cairo", addressCountry: "EG" },
     },
   ],
@@ -46,13 +53,13 @@ export default function Shell({ lang, children }: { lang: Lang; children: React.
   return (
     <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link rel="preload" as="image" href="/images/lv-hero-m.webp" media="(max-width: 640px)" fetchPriority="high" />
+        <link rel="preload" as="image" href="/images/lv-hero.webp" media="(min-width: 641px)" fetchPriority="high" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
         {children}
+        {/* Google Ads — بيشتغل تلقائياً أول ما تحط الـ ID في lib/site.ts */}
         {site.gtag && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${site.gtag}`} strategy="afterInteractive" />
@@ -65,4 +72,3 @@ export default function Shell({ lang, children }: { lang: Lang; children: React.
     </html>
   );
 }
-

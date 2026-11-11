@@ -1,110 +1,136 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { fmt } from "@/lib/site";
-import { C, type Lang } from "@/lib/content";
-import { Reveal, Heading, Bidi } from "./ui";
-import CtaWhatsapp from "./cta-whatsapp";
+import { LeadButton, useT } from "./actions";
 
-export default function Calculator({ lang }: { lang: Lang }) {
-  const t = C[lang];
-  const c = t.calc;
-  const options = useMemo(
-    () => t.products.items.flatMap((p) => p.units.map((u) => ({ id: `${p.slug}-${u.type}-${u.spec}`, label: `${u.type} — ${u.spec}`, p, price: u.price }))),
-    [t]
-  );
-  const [id, setId] = useState(options[0].id);
-  const [downPct, setDownPct] = useState(options[0].p.dp);
-  const [freq, setFreq] = useState<"monthly" | "quarterly">("quarterly");
-  const sel = options.find((o) => o.id === id)!;
-  const pct = Math.max(downPct, sel.p.dp);
+export function Calculator() {
+  const t = useT();
+  const c = t.payment.calc;
+  // الطروحات اللي ليها أسعار معلنة فقط
+  const offers = t.offers
+    .map((o) => ({ ...o, units: o.units.filter((u) => u.price !== null) }))
+    .filter((o) => o.units.length > 0);
+  const [oi, setOi] = useState(0);
+  const [ui, setUi] = useState(0);
+  const offer = offers[oi];
+  const unit = offer.units[Math.min(ui, offer.units.length - 1)];
+  const [pct, setPct] = useState(offer.dp);
 
-  const calc = useMemo(() => {
-    const down = (sel.price * pct) / 100;
-    const n = freq === "monthly" ? sel.p.years * 12 : sel.p.years * 4;
-    return { down, n, each: (sel.price - down) / n };
-  }, [sel, pct, freq]);
+  const price = unit.price as number;
+  const down = (price * pct) / 100;
+  const rest = price - down;
+  const label = `${unit.type} — ${offer.short}`;
 
   return (
-    <section id="calc" className="bg-paper py-20">
-      <div className="mx-auto max-w-7xl px-5">
-        <Reveal>
-          <Heading eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
-        </Reveal>
-
-        <Reveal delay={60}>
-          <div className="mt-10 grid gap-6 lg:grid-cols-5">
-            <div className="slab p-6 shadow-sm md:p-7 lg:col-span-2">
-              <label className="block text-sm text-ink/70" htmlFor="unit">{c.unit}</label>
-              <select
-                id="unit"
-                value={id}
-                onChange={(e) => {
-                  const o = options.find((x) => x.id === e.target.value)!;
-                  setId(o.id);
-                  setDownPct((d) => Math.max(d, o.p.dp));
-                }}
-                className="mt-2 w-full rounded-lg border border-sand-2 bg-white px-4 py-3 text-[15px] text-ink"
-              >
-                {t.products.items.map((p) => (
-                  <optgroup key={p.slug} label={p.short}>
-                    {options.filter((o) => o.p.slug === p.slug).map((o) => (
-                      <option key={o.id} value={o.id}>{o.label}</option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-
-              <div className="mt-6 flex items-center justify-between">
-                <label className="text-sm text-ink/70" htmlFor="down">{c.downPct}</label>
-                <span className="num text-lg text-brass">{pct}%</span>
-              </div>
-              <input id="down" type="range" min={sel.p.dp} max={30} step={1} value={pct} onChange={(e) => setDownPct(Number(e.target.value))} className="mt-3 w-full accent-[#b28a45]" />
-              <p className="mt-2 text-xs leading-6 text-ink/55"><Bidi>{sel.p.plan}</Bidi></p>
-
-              <p className="mt-6 text-sm text-ink/70">{c.freq}</p>
-              <div className="mt-3 flex gap-2">
-                {([["quarterly", c.quarterly], ["monthly", c.monthly]] as const).map(([k, l]) => (
-                  <button key={k} type="button" onClick={() => setFreq(k)} className={`rounded-full px-5 py-2 text-sm transition ${freq === k ? "bg-ink text-paper" : "border border-sand-2 text-ink/70 hover:border-brass"}`}>
-                    {l}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="slab-dark p-6 md:p-7 lg:col-span-3">
-              <p className="text-sm text-paper/60">{sel.label} · {sel.p.short}</p>
-              <p className="mt-2 text-brass-2">
-                <span className="num text-3xl">{fmt(sel.price)}</span> <span className="text-base text-paper/60">{t.ui.egp}</span>
-              </p>
-              <div className="ribbon-rule my-6 w-32" />
-              <dl className="grid grid-cols-3 gap-4">
-                <div>
-                  <dt className="text-xs text-paper/55">{c.downAmt}</dt>
-                  <dd className="num mt-1 text-lg text-paper">{fmt(Math.round(calc.down))}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-paper/55">{c.count}</dt>
-                  <dd className="num mt-1 text-lg text-paper">{calc.n}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-paper/55">{c.period}</dt>
-                  <dd className="mt-1 text-lg text-paper"><span className="num">{sel.p.years}</span> <span className="text-sm text-paper/60">{t.ui.years}</span></dd>
-                </div>
-              </dl>
-              <div className="mt-7 rounded-lg bg-ink/60 p-6">
-                <p className="text-sm text-paper/60">{c.each(freq === "monthly")}</p>
-                <p className="mt-2 text-brass-2">
-                  <span className="num text-4xl">{fmt(Math.round(calc.each))}</span> <span className="text-sm text-paper/60">{t.ui.egp}</span>
-                </p>
-              </div>
-              <CtaWhatsapp message={c.wa(sel.label, pct)} className="mt-6 inline-block rounded-full bg-brass-2 px-6 py-3 text-sm font-semibold text-ink transition hover:bg-brass-2/85">
-                {c.cta}
-              </CtaWhatsapp>
-            </div>
-          </div>
-        </Reveal>
+    <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-deep/10 ring-1 ring-ink/5">
+      <div role="tablist" aria-label={c.tabs} className="grid bg-tint/70 p-1.5" style={{ gridTemplateColumns: `repeat(${offers.length}, minmax(0, 1fr))` }}>
+        {offers.map((o, i) => (
+          <button
+            key={o.slug}
+            role="tab"
+            aria-selected={oi === i}
+            onClick={() => {
+              setOi(i);
+              setUi(0);
+              setPct(o.dp);
+            }}
+            className={`rounded-xl px-1.5 py-3 text-xs font-bold transition sm:text-sm ${
+              oi === i ? "bg-deep text-white shadow" : "text-deep hover:bg-white/70"
+            }`}
+          >
+            {o.short}
+          </button>
+        ))}
       </div>
-    </section>
+
+      <div className="p-5 sm:p-7">
+        <label htmlFor="calc-unit" className="text-sm text-ink/70">
+          {c.unit}
+        </label>
+        <select
+          id="calc-unit"
+          value={Math.min(ui, offer.units.length - 1)}
+          onChange={(e) => setUi(Number(e.target.value))}
+          className="mt-1.5 w-full rounded-lg border border-ink/15 bg-white px-3 py-3 text-base font-semibold text-deep focus:border-cta focus:outline-none"
+        >
+          {offer.units.map((u, i) => (
+            <option key={u.type} value={i}>
+              {u.type} · {u.spec}
+            </option>
+          ))}
+        </select>
+
+        <p className="mt-4 flex items-baseline justify-between text-sm text-ink/70">
+          <span>{c.price}</span>
+          <span className="font-display text-xl font-bold text-deep">
+            <span dir="ltr">{fmt(price)}</span> {t.ui.egp}
+          </span>
+        </p>
+
+        <label htmlFor="calc-pct" className="mt-4 flex items-baseline justify-between text-sm text-ink/70">
+          <span>{c.downPct}</span>
+          <span className="font-display text-lg font-bold text-deep" dir="ltr">
+            {pct}%
+          </span>
+        </label>
+        <input
+          id="calc-pct"
+          type="range"
+          dir="ltr"
+          min={offer.dp}
+          max={50}
+          step={5}
+          value={pct}
+          onChange={(e) => setPct(Number(e.target.value))}
+          className="mt-2 w-full"
+        />
+        <div className="mt-1 flex justify-between text-xs text-ink/50" dir="ltr">
+          <span>{offer.dp}%</span>
+          <span>50%</span>
+        </div>
+
+        <dl className="mt-6 grid grid-cols-2 gap-3">
+          <div className="rounded-xl bg-cta p-4 text-white">
+            <dt className="text-xs opacity-85">
+              {c.down} <span dir="ltr">{pct}%</span>
+            </dt>
+            <dd className="mt-1 font-display text-xl font-bold sm:text-2xl" dir="ltr">
+              {fmt(down)}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-cream p-4">
+            <dt className="text-xs text-ink/60">{c.monthly}</dt>
+            <dd className="mt-1 font-display text-xl font-bold text-deep sm:text-2xl" dir="ltr">
+              {fmt(rest / (offer.years * 12))}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-cream p-4">
+            <dt className="text-xs text-ink/60">{c.quarterly}</dt>
+            <dd className="mt-1 font-display text-lg font-bold text-deep" dir="ltr">
+              {fmt(rest / (offer.years * 4))}
+            </dd>
+          </div>
+          <div className="rounded-xl bg-cream p-4">
+            <dt className="text-xs text-ink/60">{c.term}</dt>
+            <dd className="mt-1 font-display text-lg font-bold text-deep">
+              {offer.years} {t.ui.years}
+            </dd>
+          </div>
+        </dl>
+
+        <LeadButton
+          source={`calculator-${offer.slug}`}
+          unit={label}
+          title={c.modalTitle(label)}
+          sub={c.modalSub}
+          cta={c.modalCta}
+          className="mt-5 w-full rounded-lg bg-cta px-5 py-4 text-base font-bold text-white transition hover:bg-cta-2"
+        >
+          {c.cta}
+        </LeadButton>
+        <p className="mt-3 text-center text-xs leading-relaxed text-ink/50">{c.note}</p>
+      </div>
+    </div>
   );
 }

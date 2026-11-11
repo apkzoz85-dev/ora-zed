@@ -2,103 +2,187 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { site } from "@/lib/site";
-import { C, href, type Lang } from "@/lib/content";
+import { Loader2, Lock } from "lucide-react";
+import { site, isWeb3Ready, waLink } from "@/lib/site";
+import { href } from "@/lib/content";
 import { track } from "@/lib/track";
-import { Reveal, Heading, Bidi } from "./ui";
-import CtaWhatsapp from "./cta-whatsapp";
+import { useLang, useT } from "./actions";
 
-export default function LeadForm({ lang, compact = false }: { lang: Lang; compact?: boolean }) {
-  const t = C[lang];
-  const l = t.lead;
+type Props = {
+  /** مكان الفورم في الصفحة — بيتبعت مع الليد عشان تعرف أنهي جزء بيحوّل */
+  source: string;
+  defaultUnit?: string;
+  cta?: string;
+  idPrefix?: string;
+};
+
+const normalizePhone = (v: string) =>
+  v.replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[^\d+]/g, "");
+
+export function LeadForm({ source, defaultUnit, cta, idPrefix = "f" }: Props) {
+  const lang = useLang();
+  const t = useT();
+  const f = t.form;
   const router = useRouter();
+  const [unit, setUnit] = useState(defaultUnit || "");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bot, setBot] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState("");
-  const uid = compact ? "c" : "f";
+  const [error, setError] = useState("");
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  // لو الفورم اتفتح من كارت وحدة معينة بنعرضها كاختيار جاهز
+  const options = defaultUnit && !f.options.includes(defaultUnit) ? [defaultUnit, ...f.options.slice(-1)] : f.options;
+
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErr("");
-    const data = new FormData(e.currentTarget);
-    const phone = String(data.get("phone") || "").replace(/\s|-/g, "");
-    if (!(/^01[0125][0-9]{8}$/.test(phone) || /^\+?[1-9][0-9]{7,14}$/.test(phone))) return setErr(l.errPhone);
-    if (String(data.get("name") || "").trim().length < 3) return setErr(l.errName);
+    if (bot || busy) return;
+    setError("");
 
-    data.append("access_key", site.web3forms);
-    data.append("subject", `New lead — ZED East${data.get("interest") ? ` (${data.get("interest")})` : ""} [${lang.toUpperCase()}]`);
-    data.append("from_name", site.agency);
+    const cleanPhone = normalizePhone(phone);
+    if (name.trim().length < 2) return setError(f.errName);
+    if (!/^\+?\d{9,15}$/.test(cleanPhone)) return setError(f.errPhone);
+
+    const chosen = unit || f.options[f.options.length - 1];
+    const qs = new URLSearchParams(window.location.search);
+    const done = () => {
+      track("form");
+      try {
+        sessionStorage.setItem("lead_done", "1");
+      } catch {}
+      router.push(href(lang, "/thank-you"));
+    };
 
     setBusy(true);
+
+    // لو مفتاح Web3Forms مش متحط: الليد بيروح واتساب مباشرة
+    if (!isWeb3Ready()) {
+      window.open(waLink(f.waFallback(name.trim(), chosen, cleanPhone)), "_blank", "noopener");
+      return done();
+    }
+
     try {
-      const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: data });
-      const json = await res.json();
-      if (json.success) {
-        track("form");
-        router.push(href(lang, "/thank-you"));
-      } else setErr(l.err);
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: site.web3forms,
+          subject: `New lead — ZED East — ${chosen} [${lang.toUpperCase()}]`,
+          from_name: "ZED East Landing",
+          name: name.trim(),
+          phone: cleanPhone,
+          interest: chosen,
+          source,
+          page: window.location.href,
+          utm_source: qs.get("utm_source") || "",
+          utm_campaign: qs.get("utm_campaign") || "",
+          utm_term: qs.get("utm_term") || "",
+          gclid: qs.get("gclid") || "",
+          botcheck: "",
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      done();
     } catch {
-      setErr(l.errNet);
-    } finally {
       setBusy(false);
+      setError(f.err);
     }
   }
 
-  const field = "w-full rounded-lg border border-sand-2 bg-white px-4 py-3 text-[15px] text-ink placeholder:text-ink/40";
-
-  const formEl = (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <input type="checkbox" name="botcheck" tabIndex={-1} className="hidden" aria-hidden="true" />
-      <div>
-        <label className="mb-2 block text-sm text-ink/70" htmlFor={`name-${uid}`}>{l.name}</label>
-        <input id={`name-${uid}`} name="name" required className={field} placeholder={l.namePh} />
-      </div>
-      <div>
-        <label className="mb-2 block text-sm text-ink/70" htmlFor={`phone-${uid}`}>{l.phone}</label>
-        <input id={`phone-${uid}`} name="phone" inputMode="tel" required dir="ltr" className={`${field} num`} placeholder="01012345678" />
-      </div>
-      <div>
-        <label className="mb-2 block text-sm text-ink/70" htmlFor={`interest-${uid}`}>{l.interest}</label>
-        <select id={`interest-${uid}`} name="interest" className={field} defaultValue={l.interests[l.interests.length - 1]}>
-          {l.interests.map((i) => <option key={i}>{i}</option>)}
-        </select>
-      </div>
-      {!compact && (
-        <div>
-          <label className="mb-2 block text-sm text-ink/70" htmlFor={`note-${uid}`}>{l.note}</label>
-          <textarea id={`note-${uid}`} name="note" rows={3} className={field} />
-        </div>
-      )}
-      {err && <p className="text-sm text-red-700">{err}</p>}
-      <button type="submit" disabled={busy} className="w-full rounded-full bg-ink py-3.5 font-semibold text-paper transition hover:bg-ink-2 disabled:opacity-60">
-        {busy ? l.sending : l.send}
-      </button>
-      <p className="text-xs leading-6 text-ink/50">{l.consent}</p>
-    </form>
-  );
-
-  if (compact) return formEl;
+  const field =
+    "w-full rounded-lg border border-ink/15 bg-white px-4 py-3.5 text-base text-ink placeholder:text-ink/40 focus:border-cta focus:outline-none focus:ring-2 focus:ring-cta/25";
 
   return (
-    <section id="lead" className="scroll-mt-16 bg-sand/40 py-20">
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-2">
-        <Reveal>
-          <Heading eyebrow={l.eyebrow} title={l.title} sub={l.sub} />
-          <ul className="mt-8 space-y-3 text-[15px] leading-7 text-ink/75">
-            {l.bullets.map((b) => (
-              <li key={b} className="flex gap-3">
-                <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brass" />
-                <span><Bidi>{b}</Bidi></span>
-              </li>
-            ))}
-          </ul>
-          <CtaWhatsapp message={t.wa} className="mt-8 inline-block text-[15px] text-ink underline underline-offset-8 transition hover:text-brass">
-            {l.waLink}
-          </CtaWhatsapp>
-        </Reveal>
-        <Reveal delay={70}>
-          <div className="slab p-6 shadow-sm md:p-7">{formEl}</div>
-        </Reveal>
+    <form onSubmit={onSubmit} noValidate className="space-y-3.5">
+      <fieldset>
+        <legend className="mb-2 text-sm font-semibold text-ink/80">{f.unitQ}</legend>
+        <div className="grid grid-cols-2 gap-2">
+          {options.map((u, i) => {
+            const on = unit === u;
+            return (
+              <button
+                key={u}
+                type="button"
+                aria-pressed={on}
+                onClick={() => setUnit(u)}
+                className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition ${
+                  options.length % 2 === 1 && i === options.length - 1 ? "col-span-2" : ""
+                } ${on ? "border-cta bg-cta text-white" : "border-ink/15 bg-white text-ink hover:border-cta/60"}`}
+              >
+                {u}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      <div>
+        <label htmlFor={`${idPrefix}-name`} className="sr-only">
+          {f.name}
+        </label>
+        <input
+          id={`${idPrefix}-name`}
+          className={field}
+          placeholder={f.name}
+          autoComplete="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </div>
-    </section>
+      <div>
+        <label htmlFor={`${idPrefix}-phone`} className="sr-only">
+          {f.phone}
+        </label>
+        <input
+          id={`${idPrefix}-phone`}
+          className={`${field} text-start`}
+          placeholder={f.phone}
+          type="tel"
+          inputMode="tel"
+          dir={lang === "ar" ? "rtl" : "ltr"}
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+      </div>
+
+      {/* honeypot */}
+      <input
+        type="checkbox"
+        name="botcheck"
+        tabIndex={-1}
+        autoComplete="off"
+        className="hidden"
+        checked={bot}
+        onChange={(e) => setBot(e.target.checked)}
+        aria-hidden="true"
+      />
+
+      {error && (
+        <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+          {error}{" "}
+          {error === f.err && (
+            <a href={waLink(t.wa)} target="_blank" rel="noopener" className="underline">
+              {t.ui.whatsapp}
+            </a>
+          )}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={busy}
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-cta px-5 py-4 text-base font-bold text-white shadow-lg shadow-cta/25 transition hover:bg-cta-2 disabled:opacity-70"
+      >
+        {busy && <Loader2 className="size-5 animate-spin" aria-hidden />}
+        {busy ? f.sending : cta || f.cta}
+      </button>
+
+      <p className="flex items-center justify-center gap-1.5 text-center text-xs text-ink/55">
+        <Lock className="size-3.5 shrink-0" aria-hidden />
+        {f.privacy}
+      </p>
+    </form>
   );
 }
