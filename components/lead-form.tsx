@@ -50,7 +50,7 @@ export function LeadForm({ source, defaultUnit, cta, idPrefix = "f" }: Props) {
       try {
         sessionStorage.setItem("lead_done", "1");
       } catch {}
-      router.push(href(lang, "/thank-you"));
+      router.push(href(lang, `${t.base}/thank-you`));
     };
 
     setBusy(true);
@@ -67,8 +67,8 @@ export function LeadForm({ source, defaultUnit, cta, idPrefix = "f" }: Props) {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           access_key: site.web3forms,
-          subject: `New lead — ZED East — ${chosen} [${lang.toUpperCase()}]`,
-          from_name: "ZED East Landing",
+          subject: `New lead — ${t.brand} — ${chosen} [${lang.toUpperCase()}]`,
+          from_name: `${t.brand} Landing`,
           name: name.trim(),
           phone: cleanPhone,
           interest: chosen,

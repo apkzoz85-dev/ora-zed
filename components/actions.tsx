@@ -3,14 +3,16 @@
 import { createContext, useContext, useEffect, useRef } from "react";
 import { Phone } from "lucide-react";
 import { site, waLink } from "@/lib/site";
-import { C, type Lang } from "@/lib/content";
+import { type Lang } from "@/lib/content";
+import { SITES, type ProjectKey } from "@/lib/projects";
 import { track } from "@/lib/track";
 
 export type LeadOpts = { title?: string; sub?: string; unit?: string; source: string; cta?: string };
 export const LangCtx = createContext<Lang>("ar");
+export const ProjectCtx = createContext<ProjectKey>("zed-east");
 export const LeadCtx = createContext<(o: LeadOpts) => void>(() => {});
 export const useLang = () => useContext(LangCtx);
-export const useT = () => C[useContext(LangCtx)];
+export const useT = () => SITES[useContext(ProjectCtx)][useContext(LangCtx)];
 export const useLead = () => useContext(LeadCtx);
 
 export function WhatsAppIcon({ className = "size-5" }: { className?: string }) {

@@ -7,29 +7,34 @@ import "@fontsource/ibm-plex-sans-arabic/700.css";
 import "@fontsource-variable/alexandria";
 import "@fontsource/cormorant-garamond/600.css";
 import { site } from "@/lib/site";
-import { C, href, type Lang } from "@/lib/content";
+import { href, type Lang } from "@/lib/content";
+import { SITES, type ProjectKey } from "@/lib/projects";
 
-export function pageMeta(lang: Lang, path = "/", extra: Partial<Metadata> = {}): Metadata {
-  const m = C[lang].meta;
+/** الدومين بدون / في الآخر — حتى لا تتكرر الشرطة في الروابط */
+const ROOT = site.url.replace(/\/+$/, "");
+
+export function pageMeta(lang: Lang, path = "/", extra: Partial<Metadata> = {}, project: ProjectKey = "zed-east"): Metadata {
+  const t = SITES[project][lang];
+  const m = t.meta;
   return {
     metadataBase: new URL(site.url),
     title: m.title,
     description: m.description,
     keywords: m.keywords,
     alternates: {
-      canonical: `${site.url}${href(lang, path) === "/" ? "" : href(lang, path)}`,
-      languages: { ar: `${site.url}${path === "/" ? "" : path}`, en: `${site.url}${href("en", path)}` },
+      canonical: `${ROOT}${href(lang, path) === "/" ? "" : href(lang, path)}`,
+      languages: { ar: `${ROOT}${path === "/" ? "" : path}`, en: `${ROOT}${href("en", path)}` },
     },
     openGraph: {
       type: "website",
       locale: lang === "ar" ? "ar_EG" : "en_US",
-      url: `${site.url}${href(lang, path)}`,
-      siteName: "ZED East by ORA",
+      url: `${ROOT}${href(lang, path)}`,
+      siteName: `${t.brand} by ORA`,
       title: m.title,
       description: m.description,
-      images: [{ url: "/images/og.jpg", width: 1200, height: 630 }],
+      images: [{ url: t.media.og, width: 1200, height: 630 }],
     },
-    twitter: { card: "summary_large_image", title: m.title, description: m.description, images: ["/images/og.jpg"] },
+    twitter: { card: "summary_large_image", title: m.title, description: m.description, images: [t.media.og] },
     robots: { index: true, follow: true },
     ...extra,
   };
@@ -38,14 +43,7 @@ export function pageMeta(lang: Lang, path = "/", extra: Partial<Metadata> = {}):
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "RealEstateAgent", name: site.agency, url: site.url, telephone: site.phoneIntl, email: site.email, areaServed: "New Cairo, Egypt" },
-    {
-      "@type": "Place",
-      name: "ZED East by ORA — Levora Tower",
-      description:
-        "ORA Developers community in New Cairo (Fifth Settlement) around the 40-feddan ZED Sports Club: Levora Tower serviced residences, Club Side Residence, The Emerald Collection and ZED Strip.",
-      address: { "@type": "PostalAddress", addressLocality: "South 90th St., Fifth Settlement, New Cairo", addressCountry: "EG" },
-    },
+    { "@type": "RealEstateAgent", name: site.agency, url: site.url, telephone: site.phoneIntl, email: site.email, areaServed: "Cairo, Egypt" },
   ],
 };
 
@@ -53,8 +51,6 @@ export default function Shell({ lang, children }: { lang: Lang; children: React.
   return (
     <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"}>
       <head>
-        <link rel="preload" as="image" href="/images/lv-hero-m.webp" media="(max-width: 640px)" fetchPriority="high" />
-        <link rel="preload" as="image" href="/images/lv-hero.webp" media="(min-width: 641px)" fetchPriority="high" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>

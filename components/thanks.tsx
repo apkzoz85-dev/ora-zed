@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { CheckCircle2, Phone } from "lucide-react";
 import { site, waLink } from "@/lib/site";
-import { C, href, type Lang } from "@/lib/content";
+import { href, type Lang } from "@/lib/content";
+import { SITES, type ProjectKey } from "@/lib/projects";
 import { WhatsAppIcon } from "./actions";
 
-export default function Thanks({ lang }: { lang: Lang }) {
-  const t = C[lang];
+export default function Thanks({ lang, project = "zed-east" }: { lang: Lang; project?: ProjectKey }) {
+  const t = SITES[project][lang];
   return (
     <main className="flex min-h-dvh items-center justify-center bg-deep px-4 py-16 text-center text-white">
       <div className="max-w-md">
@@ -29,7 +30,7 @@ export default function Thanks({ lang }: { lang: Lang }) {
             <span dir="ltr">{site.phoneDisplay}</span>
           </a>
         </div>
-        <Link href={href(lang)} className="mt-8 inline-block text-sm text-white/60 underline">
+        <Link href={href(lang, t.base || "/")} className="mt-8 inline-block text-sm text-white/60 underline">
           {t.ui.back}
         </Link>
       </div>

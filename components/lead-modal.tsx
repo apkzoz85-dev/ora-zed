@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { LeadForm } from "./lead-form";
-import { LangCtx, LeadCtx, type LeadOpts } from "./actions";
-import { C, type Lang } from "@/lib/content";
+import { LangCtx, LeadCtx, ProjectCtx, type LeadOpts } from "./actions";
+import { type Lang } from "@/lib/content";
+import { SITES, type ProjectKey } from "@/lib/projects";
 
 const flag = (k: string, set?: boolean) => {
   try {
@@ -15,8 +16,16 @@ const flag = (k: string, set?: boolean) => {
   }
 };
 
-export function LeadModalProvider({ lang, children }: { lang: Lang; children: React.ReactNode }) {
-  const t = C[lang];
+export function LeadModalProvider({
+  lang,
+  project = "zed-east",
+  children,
+}: {
+  lang: Lang;
+  project?: ProjectKey;
+  children: React.ReactNode;
+}) {
+  const t = SITES[project][lang];
   const [opts, setOpts] = useState<LeadOpts | null>(null);
   const openRef = useRef(false);
   openRef.current = !!opts;
@@ -61,6 +70,7 @@ export function LeadModalProvider({ lang, children }: { lang: Lang; children: Re
 
   return (
     <LangCtx.Provider value={lang}>
+      <ProjectCtx.Provider value={project}>
       <LeadCtx.Provider value={open}>
         {children}
         {opts && (
@@ -82,7 +92,9 @@ export function LeadModalProvider({ lang, children }: { lang: Lang; children: Re
               >
                 <X className="size-5" />
               </button>
-              <p className="font-latin text-sm font-semibold tracking-[0.2em] text-accent">ZED EAST · ORA</p>
+              <p className="font-latin text-sm font-semibold tracking-[0.2em] text-accent" dir="ltr">
+                {t.wordmark[0]} · ORA
+              </p>
               <h2 id="lead-modal-title" className="mt-1 pe-8 text-2xl font-bold leading-snug text-deep">
                 {opts.title || t.form.modalTitle}
               </h2>
@@ -98,6 +110,7 @@ export function LeadModalProvider({ lang, children }: { lang: Lang; children: Re
           </div>
         )}
       </LeadCtx.Provider>
+      </ProjectCtx.Provider>
     </LangCtx.Provider>
   );
 }

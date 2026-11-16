@@ -7,13 +7,14 @@ import { CallLink, LeadButton, WaLink, WhatsAppIcon, useLang, useT } from "./act
 import { href } from "@/lib/content";
 
 export function Wordmark({ light = false }: { light?: boolean }) {
+  const t = useT();
   return (
-    <a href="#top" className="flex flex-col leading-none" aria-label="ZED East by ORA" dir="ltr">
+    <a href="#top" className="flex flex-col leading-none" aria-label={`${t.brand} by ORA`} dir="ltr">
       <span className={`font-latin text-[1.35rem] font-semibold tracking-[0.14em] ${light ? "text-white" : "text-deep"}`}>
-        ZED EAST
+        {t.wordmark[0]}
       </span>
       <span className={`mt-1 font-latin text-[0.62rem] font-semibold tracking-[0.34em] ${light ? "text-white/75" : "text-accent"}`}>
-        BY ORA · NEW CAIRO
+        {t.wordmark[1]}
       </span>
     </a>
   );
@@ -50,7 +51,7 @@ export function Header() {
         </nav>
         <div className="flex items-center gap-2">
           <Link
-            href={href(lang === "ar" ? "en" : "ar")}
+            href={href(lang === "ar" ? "en" : "ar", t.base || "/")}
             aria-label={t.ui.otherLangLabel}
             className={`flex size-10 items-center justify-center rounded-lg border text-sm font-bold ${
               solid ? "border-deep/25 text-deep" : "border-white/50 text-white"

@@ -20,7 +20,8 @@ import { Calculator } from "./calculator";
 import { CallLink, LeadButton, Reveal, WaLink, WhatsAppIcon } from "./actions";
 import { CookieConsent, Header, StickyActions, Wordmark } from "./chrome";
 import { site, fmt } from "@/lib/site";
-import { C, href, type Lang, type Offer } from "@/lib/content";
+import { href, type Lang, type Offer } from "@/lib/content";
+import { PROJECT_KEYS, SITES, type ProjectKey } from "@/lib/projects";
 
 const AMENITY_ICONS = [Trophy, Waves, ConciergeBell, Laptop, Dumbbell, UtensilsCrossed, ShoppingBasket, Footprints, Car];
 
@@ -35,8 +36,10 @@ function Eyebrow({ children, light }: { children: React.ReactNode; light?: boole
 
 const priceM = (n: number) => (n / 1e6).toFixed(1);
 
-export default function Landing({ lang }: { lang: Lang }) {
-  const t = C[lang];
+export default function Landing({ lang, project = "zed-east" }: { lang: Lang; project?: ProjectKey }) {
+  const t = SITES[project][lang];
+  const m = t.media;
+  const lastOffer = t.offers[t.offers.length - 1];
   const u = t.units;
 
   const unitCard = (o: Offer, i: number) => {
@@ -123,7 +126,7 @@ export default function Landing({ lang }: { lang: Lang }) {
   };
 
   return (
-    <LeadModalProvider lang={lang}>
+    <LeadModalProvider lang={lang} project={project}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -138,15 +141,29 @@ export default function Landing({ lang }: { lang: Lang }) {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Place",
+            name: t.place.name,
+            description: t.place.description,
+            address: { "@type": "PostalAddress", addressLocality: t.place.locality, addressCountry: "EG" },
+          }),
+        }}
+      />
+      <link rel="preload" as="image" href={m.heroM} media="(max-width: 640px)" fetchPriority="high" />
+      <link rel="preload" as="image" href={m.hero} media="(min-width: 641px)" fetchPriority="high" />
       <Header />
 
       <main id="top" className="pb-[58px] md:pb-0">
         {/* ============ HERO ============ */}
         <section className="relative isolate overflow-hidden bg-deep text-white">
           <picture>
-            <source media="(max-width: 640px)" srcSet="/images/lv-hero-m.webp" />
+            <source media="(max-width: 640px)" srcSet={m.heroM} />
             <img
-              src="/images/lv-hero.webp"
+              src={m.hero}
               alt={t.hero.alt}
               fetchPriority="high"
               decoding="async"
@@ -214,7 +231,7 @@ export default function Landing({ lang }: { lang: Lang }) {
           </Reveal>
           <Reveal delay={120} className="relative">
             <div className="cut-lg relative aspect-[4/3] overflow-hidden rounded-2xl">
-              <Image src="/images/lv-towers-day.webp" alt={t.intro.alt} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" />
+              <Image src={m.intro} alt={t.intro.alt} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-cover" />
             </div>
             <div className="absolute -bottom-5 start-5 rounded-xl bg-accent px-5 py-3 text-white shadow-lg">
               <p className="font-latin text-lg font-semibold tracking-wider" dir="ltr">
@@ -225,7 +242,7 @@ export default function Landing({ lang }: { lang: Lang }) {
         </section>
 
         {/* ============ LEVORA TOWER (الطرح الجديد) ============ */}
-        <section id="levora" className="relative overflow-hidden bg-wine py-16 text-white lg:py-24">
+        <section id={t.featureId} className="relative overflow-hidden bg-wine py-16 text-white lg:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
             <Reveal>
               <Eyebrow light>{t.levora.eyebrow}</Eyebrow>
@@ -266,7 +283,7 @@ export default function Landing({ lang }: { lang: Lang }) {
                   {t.levora.cta}
                 </LeadButton>
                 <WaLink
-                  msg={u.wa(t.offers[0].short, "64–146 m²", "ORA")}
+                  msg={t.wa}
                   className="flex items-center justify-center gap-2 rounded-lg bg-wa px-6 py-4 font-bold text-white"
                 >
                   <WhatsAppIcon /> {t.ui.whatsapp}
@@ -278,14 +295,14 @@ export default function Landing({ lang }: { lang: Lang }) {
             <Reveal delay={120}>
               <div className="grid grid-cols-5 gap-3">
                 <div className="cut-lg relative col-span-3 aspect-[3/4] overflow-hidden rounded-2xl">
-                  <Image src="/images/lv-tower.webp" alt={t.levora.alt1} fill sizes="(min-width:1024px) 28vw, 60vw" className="object-cover" />
+                  <Image src={m.feature[0]} alt={t.levora.alt1} fill sizes="(min-width:1024px) 28vw, 60vw" className="object-cover" />
                 </div>
                 <div className="col-span-2 grid grid-rows-2 gap-3">
                   <div className="relative overflow-hidden rounded-2xl">
-                    <Image src="/images/lv-pool-night.webp" alt={t.levora.alt2} fill sizes="(min-width:1024px) 18vw, 40vw" className="object-cover" />
+                    <Image src={m.feature[1]} alt={t.levora.alt2} fill sizes="(min-width:1024px) 18vw, 40vw" className="object-cover" />
                   </div>
                   <div className="relative overflow-hidden rounded-2xl">
-                    <Image src="/images/lv-kitchen.webp" alt={t.gallery.items[2][1]} fill sizes="(min-width:1024px) 18vw, 40vw" className="object-cover" />
+                    <Image src={m.feature[2]} alt={t.gallery.items[2][1]} fill sizes="(min-width:1024px) 18vw, 40vw" className="object-cover" />
                   </div>
                 </div>
               </div>
@@ -336,7 +353,7 @@ export default function Landing({ lang }: { lang: Lang }) {
                       <h3 className="mt-1 flex flex-wrap items-center gap-3 text-2xl font-bold text-deep">
                         {o.name}
                         {o.badge && (
-                          <span className={`rounded-md px-2.5 py-1 font-sans text-xs font-bold text-white ${o.slug === "levora" ? "bg-wine" : "bg-cta"}`}>
+                          <span className={`rounded-md px-2.5 py-1 font-sans text-xs font-bold text-white ${o.featured ? "bg-wine" : "bg-cta"}`}>
                             {o.badge}
                           </span>
                         )}
@@ -348,10 +365,10 @@ export default function Landing({ lang }: { lang: Lang }) {
                 </Reveal>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                   {o.units.map((_, i) => unitCard(o, i))}
-                  {o.slug === "levora" && (
+                  {o.featured && o.units.length % 4 === 3 && (
                     <Reveal delay={240}>
                       <div className="relative isolate flex h-full min-h-[320px] flex-col justify-end overflow-hidden rounded-2xl bg-wine p-6 text-white">
-                        <Image src="/images/lv-sunset.webp" alt={t.levora.alt1} fill sizes="(min-width:1024px) 25vw, 100vw" className="-z-10 object-cover opacity-45" />
+                        <Image src={m.brochureTile} alt={t.levora.alt1} fill sizes="(min-width:1024px) 25vw, 100vw" className="-z-10 object-cover opacity-45" />
                         <p className="font-latin text-sm font-semibold tracking-[0.24em] text-gold" dir="ltr">
                           {t.magnet.latin}
                         </p>
@@ -369,10 +386,13 @@ export default function Landing({ lang }: { lang: Lang }) {
                       </div>
                     </Reveal>
                   )}
-                  {o.slug === "zed-strip" && (
-                    <Reveal delay={120} className="sm:col-span-1 lg:col-span-3">
+                  {o === lastOffer && !(o.featured && o.units.length % 4 === 3) && o.units.length % 4 !== 0 && (
+                    <Reveal
+                      delay={120}
+                      className={o.units.length % 4 === 1 ? "sm:col-span-1 lg:col-span-3" : o.units.length % 4 === 2 ? "sm:col-span-2 lg:col-span-2" : "sm:col-span-1 lg:col-span-1"}
+                    >
                       <div className="relative isolate flex h-full min-h-[260px] flex-col justify-end overflow-hidden rounded-2xl bg-deep p-6 text-white sm:p-8">
-                        <Image src="/images/ze-park.webp" alt={`${o.short} — ${t.gallery.suffix}`} fill sizes="(min-width:1024px) 60vw, 100vw" className="-z-10 object-cover object-bottom opacity-35" />
+                        <Image src={m.endTile} alt={`${o.short} — ${t.gallery.suffix}`} fill sizes="(min-width:1024px) 60vw, 100vw" className="-z-10 object-cover object-bottom opacity-35" />
                         <p className="max-w-xl font-display text-2xl font-bold leading-snug">{t.mid.title}</p>
                         <p className="mt-2 text-white/80">{t.mid.sub}</p>
                         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
@@ -465,7 +485,7 @@ export default function Landing({ lang }: { lang: Lang }) {
 
         {/* ============ MID CTA ============ */}
         <section className="relative isolate overflow-hidden bg-cta text-white">
-          <Image src="/images/lv-podium-night.webp" alt={t.mid.alt} fill sizes="100vw" className="-z-10 object-cover opacity-30" />
+          <Image src={m.mid} alt={t.mid.alt} fill sizes="100vw" className="-z-10 object-cover opacity-30" />
           <div className="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 py-14 sm:px-6 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-bold sm:text-3xl">{t.mid.title}</h2>
@@ -519,7 +539,7 @@ export default function Landing({ lang }: { lang: Lang }) {
               <div className="cut-lg overflow-hidden rounded-2xl bg-tint">
                 <iframe
                   title={t.location.mapTitle}
-                  src={`https://www.google.com/maps?q=ZED+East+ORA+New+Cairo&hl=${lang}&output=embed`}
+                  src={`https://www.google.com/maps?q=${encodeURIComponent(t.mapQuery)}&hl=${lang}&output=embed`}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   className="aspect-[4/3] w-full border-0"
@@ -533,7 +553,7 @@ export default function Landing({ lang }: { lang: Lang }) {
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
           <Reveal>
             <div className="relative isolate overflow-hidden rounded-3xl bg-wine">
-              <Image src="/images/lv-plan.webp" alt={t.magnet.alt} fill sizes="100vw" className="-z-10 object-cover opacity-30 blur-[2px]" />
+              <Image src={m.magnet} alt={t.magnet.alt} fill sizes="100vw" className="-z-10 object-cover opacity-30 blur-[2px]" />
               <div className="flex min-h-[380px] flex-col items-center justify-center px-5 py-14 text-center text-white">
                 <p className="font-latin text-sm font-semibold tracking-[0.3em] text-gold" dir="ltr">
                   {t.magnet.latin}
@@ -587,7 +607,7 @@ export default function Landing({ lang }: { lang: Lang }) {
         <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:py-24">
           <Reveal>
             <div className="cut-lg relative aspect-[5/4] overflow-hidden rounded-2xl">
-              <Image src="/images/lv-sunset.webp" alt={t.developer.alt} fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
+              <Image src={m.developer} alt={t.developer.alt} fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
             </div>
           </Reveal>
           <Reveal delay={120}>
@@ -621,7 +641,7 @@ export default function Landing({ lang }: { lang: Lang }) {
 
         {/* ============ FINAL CTA ============ */}
         <section className="relative isolate overflow-hidden bg-deep text-white">
-          <Image src="/images/lv-pool-night.webp" alt={t.final.alt} fill sizes="100vw" className="-z-10 object-cover opacity-35" />
+          <Image src={m.final} alt={t.final.alt} fill sizes="100vw" className="-z-10 object-cover opacity-35" />
           <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-24">
             <div>
               <Eyebrow light>{t.final.eyebrow}</Eyebrow>
@@ -660,6 +680,21 @@ export default function Landing({ lang }: { lang: Lang }) {
               ))}
             </div>
           </div>
+          <nav className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm" aria-label={lang === "ar" ? "مشاريع أورا" : "ORA projects"}>
+            <span className="font-semibold text-white/85">{lang === "ar" ? "مشاريع أورا:" : "ORA projects:"}</span>
+            {PROJECT_KEYS.map((k) => {
+              const p = SITES[k][lang];
+              return k === project ? (
+                <span key={k} className="font-semibold text-gold" aria-current="page">
+                  {p.name}
+                </span>
+              ) : (
+                <Link key={k} href={href(lang, p.base || "/")} className="underline underline-offset-4 hover:text-white">
+                  {p.name}
+                </Link>
+              );
+            })}
+          </nav>
           <div className="mt-8 space-y-3 border-t border-white/10 pt-6 text-xs leading-relaxed text-white/55">
             <p>
               <strong className="text-white/80">{t.footer.disclosureLabel}</strong> {t.footer.disclosure}

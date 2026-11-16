@@ -16,7 +16,9 @@ const P = {
 
 export type Unit = { type: string; spec: string; price: number | null; image: string; tags: string[] };
 export type Offer = {
-  slug: "levora" | "zed-csr" | "zed-emerald" | "zed-strip";
+  slug: string;
+  /** الطرح المميز (يظهر بلون مختلف ومعه كارت البروشور) */
+  featured?: boolean;
   label: string; // English caps label
   name: string;
   short: string;
@@ -37,6 +39,32 @@ const IMG = {
 const ar = {
   dir: "rtl" as const,
   name: "زد إيست",
+  /** مفتاح المشروع ومساره على الدومين (فاضي = الصفحة الرئيسية) */
+  key: "zed-east" as string,
+  base: "" as string,
+  brand: "ZED East" as string,
+  wordmark: ["ZED EAST", "BY ORA · NEW CAIRO"],
+  featureId: "levora",
+  mapQuery: "ZED East ORA New Cairo",
+  place: {
+    name: "ZED East by ORA — Levora Tower",
+    description:
+      "ORA Developers community in New Cairo (Fifth Settlement) around the 40-feddan ZED Sports Club: Levora Tower serviced residences, Club Side Residence, The Emerald Collection and ZED Strip.",
+    locality: "South 90th St., Fifth Settlement, New Cairo",
+  },
+  media: {
+    og: "/images/og.jpg",
+    hero: "/images/lv-hero.webp",
+    heroM: "/images/lv-hero-m.webp",
+    intro: "/images/lv-towers-day.webp",
+    feature: ["/images/lv-tower.webp", "/images/lv-pool-night.webp", "/images/lv-kitchen.webp"],
+    brochureTile: "/images/lv-sunset.webp",
+    endTile: "/images/ze-park.webp",
+    mid: "/images/lv-podium-night.webp",
+    magnet: "/images/lv-plan.webp",
+    developer: "/images/lv-sunset.webp",
+    final: "/images/lv-pool-night.webp",
+  },
   meta: {
     title: "زد إيست التجمع الخامس | ليفورا تاور الطرح الجديد من أورا — من 13.5 مليون وتقسيط 10 سنوات",
     description:
@@ -143,6 +171,7 @@ const ar = {
   offers: [
     {
       slug: "levora",
+      featured: true,
       label: "LEVORA TOWER",
       name: "ليفورا تاور — شقق فندقية مخدومة",
       short: "ليفورا تاور",
@@ -381,11 +410,37 @@ const ar = {
   },
 };
 
-type Dict = typeof ar;
+export type Dict = typeof ar;
 
 const en: Dict = {
   dir: "ltr" as unknown as "rtl",
   name: "ZED East",
+  /** مفتاح المشروع ومساره على الدومين (فاضي = الصفحة الرئيسية) */
+  key: "zed-east" as string,
+  base: "" as string,
+  brand: "ZED East" as string,
+  wordmark: ["ZED EAST", "BY ORA · NEW CAIRO"],
+  featureId: "levora",
+  mapQuery: "ZED East ORA New Cairo",
+  place: {
+    name: "ZED East by ORA — Levora Tower",
+    description:
+      "ORA Developers community in New Cairo (Fifth Settlement) around the 40-feddan ZED Sports Club: Levora Tower serviced residences, Club Side Residence, The Emerald Collection and ZED Strip.",
+    locality: "South 90th St., Fifth Settlement, New Cairo",
+  },
+  media: {
+    og: "/images/og.jpg",
+    hero: "/images/lv-hero.webp",
+    heroM: "/images/lv-hero-m.webp",
+    intro: "/images/lv-towers-day.webp",
+    feature: ["/images/lv-tower.webp", "/images/lv-pool-night.webp", "/images/lv-kitchen.webp"],
+    brochureTile: "/images/lv-sunset.webp",
+    endTile: "/images/ze-park.webp",
+    mid: "/images/lv-podium-night.webp",
+    magnet: "/images/lv-plan.webp",
+    developer: "/images/lv-sunset.webp",
+    final: "/images/lv-pool-night.webp",
+  },
   meta: {
     title: "ZED East New Cairo | Levora Tower by ORA — From EGP 13.5M, 10 Years to Pay",
     description:
@@ -477,6 +532,7 @@ const en: Dict = {
   offers: [
     {
       slug: "levora",
+      featured: true,
       label: "LEVORA TOWER",
       name: "Levora Tower — Serviced Residences",
       short: "Levora Tower",
@@ -716,3 +772,6 @@ const en: Dict = {
 };
 
 export const C: Record<Lang, Dict> = { ar, en };
+
+/** أساس النصوص المشتركة — تُبنى عليه صفحات باقي المشاريع في lib/projects.ts */
+export const BASE = C;
