@@ -20,9 +20,9 @@ export const site = {
    */
   web3forms: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "0c24e560-4880-487d-a436-d00d678d8204",
 
-  // Google Ads — gtag: "AW-XXXXXXXXXX" · conv: "AW-XXXXXXXXXX/label"
+  // Google Ads — gtag: "AW-18580466474" · conv: "AW-XXXXXXXXXX/label"
   gtag: "",
-  conv: { form: "", whatsapp: "", call: "" },
+  conv: { form: "AW-18580466474/FGMYCPmqh7sdEKrW7ZtF", whatsapp: "AW-18580466474/ahbvCPyqh7sdEKrW7ZtF", call: "AW-18580466474/knk4CP-qh7sdEKrW7ZtF" },
 
   agencyCredit: { name: "One Click", url: "" }, // ← رابط موقع One Click (بيتحول للينك nofollow تلقائياً)
 } as const;
